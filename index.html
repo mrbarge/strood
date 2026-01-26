@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood · Strudel Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #121826;
+            --text-primary: #e8e9ed;
+            --text-secondary: #9aa5b8;
+            --accent: #6366f1;
+            --mood-color: #6366f1;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(
+                    circle at 20% 50%,
+                    var(--mood-color) 0%,
+                    transparent 50%
+            ),
+            radial-gradient(
+                    circle at 80% 80%,
+                    var(--mood-color) 0%,
+                    transparent 50%
+            );
+            opacity: 0.15;
+            filter: blur(80px);
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            width: 90%;
+            padding: 3rem;
+            background: rgba(18, 24, 38, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow:
+                    0 20px 60px rgba(0, 0, 0, 0.5),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--text-primary), var(--mood-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.875rem;
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .mood-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .mood-btn {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+            padding: 1.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mood-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: var(--mood-color);
+            opacity: 0.2;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .mood-btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--mood-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .mood-btn:hover::before {
+            width: 200%;
+            height: 200%;
+        }
+
+        .mood-btn.active {
+            background: var(--mood-color);
+            border-color: var(--mood-color);
+            color: white;
+            box-shadow: 0 0 30px var(--mood-color);
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .control-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            min-width: 120px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .toggle {
+            position: relative;
+            width: 60px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 24px;
+            height: 24px;
+            background: var(--text-primary);
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .toggle.active {
+            background: var(--mood-color);
+        }
+
+        .toggle.active::before {
+            left: 32px;
+        }
+
+        .play-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .play-btn {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.875rem;
+            padding: 1rem 2.5rem;
+            background: var(--mood-color);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .play-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .play-btn:active {
+            transform: translateY(0);
+        }
+
+        .play-btn.stop {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+        }
+
+        .play-btn.stop:hover {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .status {
+            text-align: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .status.playing {
+            color: var(--mood-color);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .mood-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Mood</h1>
+    <p class="subtitle">Generative Ambient Soundscapes</p>
+
+    <div class="mood-grid">
+        <button class="mood-btn" data-mood="calm">Calm</button>
+        <button class="mood-btn" data-mood="melancholic">Melancholic</button>
+        <button class="mood-btn" data-mood="dreamy">Dreamy</button>
+        <button class="mood-btn" data-mood="mysterious">Mysterious</button>
+        <button class="mood-btn" data-mood="uplifting">Uplifting</button>
+        <button class="mood-btn" data-mood="contemplative">Contemplative</button>
+    </div>
+
+    <div class="controls">
+        <div class="control-group">
+            <span class="control-label">Add Melody</span>
+            <div class="toggle" id="melody-toggle"></div>
+        </div>
+        <div class="control-group">
+            <span class="control-label">Ambient Noise</span>
+            <div class="toggle" id="noise-toggle"></div>
+        </div>
+        <div class="control-group">
+            <span class="control-label">Harmonics</span>
+            <div class="toggle" id="harmonics-toggle"></div>
+        </div>
+    </div>
+
+    <div class="play-controls">
+        <button class="play-btn" id="play-btn">Play</button>
+        <button class="play-btn stop" id="stop-btn">Stop</button>
+    </div>
+
+    <div class="status" id="status">Loading audio engine...</div>
+</div>
+
+<!-- Load Strudel Web bundle -->
+<script src="https://unpkg.com/@strudel/web@1.0.3"></script>
+
+<script>
+    // Mood color mappings
+    const moodColors = {
+        calm: '#4ade80',
+        melancholic: '#8b5cf6',
+        dreamy: '#ec4899',
+        mysterious: '#6366f1',
+        uplifting: '#f59e0b',
+        contemplative: '#06b6d4'
+    };
+
+    // State
+    let currentMood = null;
+    let isPlaying = false;
+    let strudelReady = false;
+    let options = {
+        melody: false,
+        noise: false,
+        harmonics: false
+    };
+
+    // DOM elements
+    const moodButtons = document.querySelectorAll('.mood-btn');
+    const playButton = document.getElementById('play-btn');
+    const stopButton = document.getElementById('stop-btn');
+    const melodyToggle = document.getElementById('melody-toggle');
+    const noiseToggle = document.getElementById('noise-toggle');
+    const harmonicsToggle = document.getElementById('harmonics-toggle');
+    const status = document.getElementById('status');
+
+    // Wait for Strudel to load and initialize
+    async function initStrudelApp() {
+        try {
+            // Wait a bit for the script to fully load
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // Check if initStrudel function is available
+            if (typeof initStrudel === 'function') {
+                console.log('Initializing Strudel...');
+                await initStrudel();
+                console.log('Strudel initialized successfully');
+                strudelReady = true;
+                status.textContent = 'Select a mood to begin';
+            } else {
+                console.error('initStrudel function not found. Available globals:', Object.keys(window).filter(k => k.toLowerCase().includes('strudel')));
+                status.textContent = 'Error: Strudel not loaded';
+            }
+        } catch (error) {
+            console.error('Error initializing Strudel:', error);
+            status.textContent = 'Error: ' + error.message;
+        }
+    }
+
+    // Initialize when page loads
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initStrudelApp);
+    } else {
+        initStrudelApp();
+    }
+
+    // Mood selection
+    moodButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const mood = btn.dataset.mood;
+            currentMood = mood;
+
+            moodButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            document.documentElement.style.setProperty('--mood-color', moodColors[mood]);
+            status.textContent = `${mood.charAt(0).toUpperCase() + mood.slice(1)} mood selected`;
+
+            if (isPlaying) {
+                playPattern();
+            }
+        });
+    });
+
+    // Toggle controls
+    melodyToggle.addEventListener('click', () => {
+        options.melody = !options.melody;
+        melodyToggle.classList.toggle('active');
+        if (isPlaying) playPattern();
+    });
+
+    noiseToggle.addEventListener('click', () => {
+        options.noise = !options.noise;
+        noiseToggle.classList.toggle('active');
+        if (isPlaying) playPattern();
+    });
+
+    harmonicsToggle.addEventListener('click', () => {
+        options.harmonics = !options.harmonics;
+        harmonicsToggle.classList.toggle('active');
+        if (isPlaying) playPattern();
+    });
+
+    // Play/Stop controls
+    playButton.addEventListener('click', () => {
+        if (!strudelReady) {
+            status.textContent = 'Audio engine still loading...';
+            return;
+        }
+        if (!currentMood) {
+            status.textContent = 'Please select a mood first';
+            return;
+        }
+        isPlaying = true;
+        playPattern();
+        status.textContent = 'Playing...';
+        status.classList.add('playing');
+    });
+
+    stopButton.addEventListener('click', () => {
+        isPlaying = false;
+        if (typeof hush === 'function') {
+            hush();
+        }
+        status.textContent = `${currentMood ? currentMood.charAt(0).toUpperCase() + currentMood.slice(1) + ' mood selected' : 'Stopped'}`;
+        status.classList.remove('playing');
+    });
+
+    function playPattern() {
+        if (!currentMood || !strudelReady) return;
+
+        console.log('Playing mood:', currentMood);
+
+        // Stop any existing pattern
+        if (typeof hush === 'function') {
+            hush();
+        }
+
+        try {
+            // Build and play the pattern based on mood
+            let pattern;
+
+            switch(currentMood) {
+                case 'calm':
+                    pattern = note("<c3 g3 e3 a3>").s("sawtooth").lpf(400).gain(0.3).room(0.8).slow(4);
+                    if (options.harmonics) pattern = pattern.add(note("7"));
+                    if (options.melody) {
+                        pattern = pattern.stack(note("<e4 g4 c5 b4>").s("triangle").gain(0.2).delay(0.3).room(0.5).slow(3));
+                    }
+                    break;
+
+                case 'melancholic':
+                    pattern = note("<d3 f3 a3 c4>").s("sawtooth").lpf(200).gain(0.35).room(0.9).slow(6);
+                    if (options.harmonics) pattern = pattern.add(note("5"));
+                    if (options.melody) {
+                        pattern = pattern.stack(note("<f4 a4 d5 c5>").s("sine").gain(0.25).delay(0.4).room(0.7).slow(4));
+                    }
+                    break;
+
+                case 'dreamy':
+                    pattern = note("<a3 c4 e4 g4>").s("triangle").lpf(500).gain(0.3).room(0.95).delay(0.5).slow(5);
+                    if (options.harmonics) pattern = pattern.add(note("12"));
+                    if (options.melody) {
+                        pattern = pattern.stack(note("<c5 e5 g5 a5>").s("sine").gain(0.2).delay(0.6).room(0.8).slow(3.5));
+                    }
+                    break;
+
+                case 'mysterious':
+                    pattern = note("<e3 g3 b3 d4>").s("sawtooth").lpf(300).gain(0.32).room(0.85).slow(7);
+                    if (options.harmonics) pattern = pattern.add(note("3"));
+                    if (options.melody) {
+                        pattern = pattern.stack(note("<g4 b4 e5 d5>").s("triangle").gain(0.18).delay(0.5).room(0.75).slow(5));
+                    }
+                    break;
+
+                case 'uplifting':
+                    pattern = note("<g3 b3 d4 f#4>").s("triangle").lpf(700).gain(0.35).room(0.7).slow(4);
+                    if (options.harmonics) pattern = pattern.add(note("12"));
+                    if (options.melody) {
+                        pattern = pattern.stack(note("<b4 d5 g5 f#5>").s("sine").gain(0.25).delay(0.25).room(0.6).slow(2.5));
+                    }
+                    break;
+
+                case 'contemplative':
+                    pattern = note("<f3 a3 c4 e4>").s("sawtooth").lpf(450).gain(0.33).room(0.88).slow(6);
+                    if (options.harmonics) pattern = pattern.add(note("7"));
+                    if (options.melody) {
+                        pattern = pattern.stack(note("<a4 c5 f5 e5>").s("triangle").gain(0.22).delay(0.35).room(0.65).slow(4.5));
+                    }
+                    break;
+            }
+
+            // Add noise layer if enabled
+            if (options.noise && pattern) {
+                pattern = pattern.stack(note("c2").s("sawtooth").gain(0.08).lpf(1500).room(0.5).slow(16));
+            }
+
+            // Play the pattern
+            if (pattern && typeof pattern.play === 'function') {
+                pattern.play();
+                console.log('Pattern started');
+            } else {
+                console.error('Could not play pattern');
+                status.textContent = 'Error: Could not play pattern';
+            }
+
+        } catch (error) {
+            console.error('Error playing pattern:', error);
+            status.textContent = 'Error: ' + error.message;
+        }
+    }
+</script>
+</body>
+</html>
