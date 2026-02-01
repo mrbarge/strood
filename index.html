@@ -238,6 +238,15 @@
             animation: timerPulse 0.4s ease-out;
         }
 
+        .cycle-timer-fill.radical {
+            background: linear-gradient(90deg, var(--mood-color), #ff6b6b);
+            box-shadow: 0 0 8px rgba(255, 107, 107, 0.4);
+        }
+
+        .cycle-timer-label.radical {
+            color: #ff6b6b;
+        }
+
         @keyframes timerPulse {
             0% {
                 box-shadow: 0 0 10px var(--mood-color);
@@ -422,7 +431,7 @@
         </div>
         <div class="cycle-timer">
             <div class="cycle-timer-header">
-                <span class="cycle-timer-label">Next Modulation</span>
+                <span class="cycle-timer-label">Next Evolution</span>
                 <span class="cycle-timer-count" id="cycle-count">Cycle 0</span>
             </div>
             <div class="cycle-timer-track">
@@ -472,8 +481,226 @@
     let cycleState = {
         startTime: 0,
         duration: 12000, // 12 seconds per cycle
-        count: 0
+        count: 0,
+        epoch: 0,
+        cyclesPerEpoch: 5, // Customizable: radical shift every N cycles
+        isTransitioning: false
     };
+
+    // Musical variation pools for evolution
+    const evolutionPools = {
+        // Bass note sequences (minor/chromatic)
+        bassNotes: [
+            "<c2 eb2 f2 ab2>",
+            "<c2 f2 ab2 bb2>",
+            "<eb2 f2 ab2 c3>",
+            "<f2 ab2 bb2 c3>",
+            "<ab1 c2 eb2 f2>",
+            "<bb1 c2 eb2 ab2>",
+            "<c2 db2 f2 ab2>",
+            "<eb2 gb2 ab2 bb2>"
+        ],
+        // Sub bass notes
+        subNotes: [
+            "<c1 ~ eb1 ~ f1 ~ ab1 ~>",
+            "<c1 ~ f1 ~ ab1 ~ bb1 ~>",
+            "<eb1 ~ f1 ~ ab1 ~ c2 ~>",
+            "<f1 ~ ab1 ~ c2 ~ eb2 ~>",
+            "<ab0 ~ c1 ~ eb1 ~ f1 ~>",
+            "<c1 ~ ~ eb1 ~ ~ f1 ~>"
+        ],
+        // High melodic fragments
+        highNotes: [
+            "<c5 ~ eb5 ~ ~ f5 ~ ~>",
+            "<eb5 ~ g5 ~ ~ bb5 ~ ~>",
+            "<f5 ~ ab5 ~ ~ c6 ~ ~>",
+            "<g5 ~ bb5 ~ ~ c6 ~ ~>",
+            "<ab5 ~ c6 ~ ~ eb6 ~ ~>",
+            "<bb5 ~ ~ c6 ~ ~ eb6 ~>",
+            "~ c5 ~ ~ ~ eb5 ~ ~ ~ ~ g5 ~ ~ ~ bb5 ~",
+            "~ ~ eb5 ~ ~ ~ ab5 ~ ~ ~ c6 ~ ~ ~ ~ ~"
+        ],
+        // Chord voicings (dark, dissonant)
+        chords: [
+            "<[c3,eb3,g3] [bb2,db3,f3] [ab2,c3,eb3]>",
+            "<[c3,eb3,gb3,bb3] [db3,f3,ab3,c4]>",
+            "<[eb3,g3,bb3] [db3,f3,ab3] [c3,eb3,g3]>",
+            "<[f3,ab3,c4] [eb3,gb3,bb3] [db3,f3,ab3]>",
+            "<[ab2,c3,eb3,g3] [bb2,db3,f3,ab3]>",
+            "<[c3,e3,g3,b3] [db3,f3,ab3,c4] [d3,gb3,a3]>",
+            "<[eb3,g3,b3,d4] [c3,eb3,ab3]>",
+            "<[f3,a3,c4,eb4] [gb3,bb3,db4]>"
+        ],
+        // Arpeggios
+        arpeggios: [
+            "c4 eb4 g4 bb4 d5 bb4 g4 eb4",
+            "eb4 g4 bb4 c5 eb5 c5 bb4 g4",
+            "f4 ab4 c5 eb5 f5 eb5 c5 ab4",
+            "ab4 c5 eb5 g5 ab5 g5 eb5 c5",
+            "c4 eb4 gb4 bb4 c5 bb4 gb4 eb4",
+            "db4 f4 ab4 c5 db5 c5 ab4 f4",
+            "bb3 db4 f4 ab4 bb4 ab4 f4 db4",
+            "g4 bb4 db5 f5 g5 f5 db5 bb4"
+        ],
+        // Euclidean kick patterns
+        kickPatterns: [
+            "bd(3,8)",
+            "bd(5,8)",
+            "bd(3,8,<0 1 2>)",
+            "bd(5,8,<0 2>)",
+            "bd(<3 5>,8)",
+            "bd(<3 5 2 4>,<8 7 9 11>)",
+            "bd(7,16)",
+            "bd ~ bd:1 ~",
+            "bd ~ [bd bd:1] ~",
+            "bd(<3 4 5 3>,8)"
+        ],
+        // Euclidean hat patterns
+        hatPatterns: [
+            "hh(11,16)",
+            "hh(13,16)",
+            "hh(<11 13>,16)",
+            "hh(<13 17 11>,<16 16 16>)",
+            "hh*<8 12 16 6>",
+            "hh*<8 10 12 14 16 14 12 10>",
+            "hh(11,16,<0 1 2>)",
+            "hh(<11 13 17>,16)"
+        ],
+        // Snare patterns
+        snarePatterns: [
+            "~ sd(3,8,<0 2 1>)",
+            "sd(<3 4 5>,<8 9 7>,<0 1 2 3>)",
+            "~ [sd cp] ~ <sd rim>",
+            "~ sd ~ <sd [sd*2]>",
+            "sd(<3 5>,8,<1 0 2>)",
+            "~ sd(3,8) ~",
+            "~ <sd [sd cp]> ~ sd",
+            "sd(<3 4>,<8 7>,<0 2>)"
+        ],
+        // Arpeggio speeds
+        arpSpeeds: ["<1 1.5 2>", "<1 2 1.5>", "<0.5 1 1.5>", "<1 1.5 2 1.5>", "<2 1 0.5>"],
+        // FM modulation ranges
+        fmRanges: [[2, 5], [1, 4], [3, 8], [2, 6], [1, 6], [4, 10]],
+        // Filter ranges
+        filterRanges: [[200, 500], [300, 600], [250, 700], [400, 900], [200, 800], [300, 1000]],
+        // Cycle durations (ms)
+        cycleDurations: [10000, 12000, 14000, 16000, 18000, 20000]
+    };
+
+    // Current variation state
+    let currentVariation = {
+        bassNotes: 0,
+        subNotes: 0,
+        highNotes: 0,
+        chords: 0,
+        arpeggios: 0,
+        kickPattern: 0,
+        hatPattern: 0,
+        snarePattern: 0,
+        arpSpeed: 0,
+        fmRange: 0,
+        filterRange: 0
+    };
+
+    // Pick random index different from current
+    function evolveIndex(current, poolLength) {
+        let next = Math.floor(Math.random() * poolLength);
+        // Try to pick something different
+        if (poolLength > 1 && next === current) {
+            next = (next + 1) % poolLength;
+        }
+        return next;
+    }
+
+    // Subtle evolution: only tonal/timbral changes, no rhythm changes
+    function evolveSubtle() {
+        const pools = evolutionPools;
+
+        // Only evolve timbral parameters - keep rhythm and notes stable
+        if (Math.random() > 0.4) {
+            currentVariation.fmRange = evolveIndex(currentVariation.fmRange, pools.fmRanges.length);
+        }
+        if (Math.random() > 0.4) {
+            currentVariation.filterRange = evolveIndex(currentVariation.filterRange, pools.filterRanges.length);
+        }
+        // Occasionally shift arp speed slightly
+        if (Math.random() > 0.7) {
+            currentVariation.arpSpeed = evolveIndex(currentVariation.arpSpeed, pools.arpSpeeds.length);
+        }
+    }
+
+    // Radical evolution: change notes, chords, and rhythms
+    function evolveRadical() {
+        const pools = evolutionPools;
+
+        // Evolve melodic/harmonic content
+        if (Math.random() > 0.3) {
+            currentVariation.bassNotes = evolveIndex(currentVariation.bassNotes, pools.bassNotes.length);
+        }
+        if (Math.random() > 0.4) {
+            currentVariation.subNotes = evolveIndex(currentVariation.subNotes, pools.subNotes.length);
+        }
+        if (Math.random() > 0.3) {
+            currentVariation.highNotes = evolveIndex(currentVariation.highNotes, pools.highNotes.length);
+        }
+        if (Math.random() > 0.3) {
+            currentVariation.chords = evolveIndex(currentVariation.chords, pools.chords.length);
+        }
+        if (Math.random() > 0.4) {
+            currentVariation.arpeggios = evolveIndex(currentVariation.arpeggios, pools.arpeggios.length);
+        }
+
+        // Evolve rhythmic patterns
+        if (Math.random() > 0.4) {
+            currentVariation.kickPattern = evolveIndex(currentVariation.kickPattern, pools.kickPatterns.length);
+        }
+        if (Math.random() > 0.4) {
+            currentVariation.hatPattern = evolveIndex(currentVariation.hatPattern, pools.hatPatterns.length);
+        }
+        if (Math.random() > 0.5) {
+            currentVariation.snarePattern = evolveIndex(currentVariation.snarePattern, pools.snarePatterns.length);
+        }
+
+        // Also evolve timbral parameters
+        currentVariation.arpSpeed = evolveIndex(currentVariation.arpSpeed, pools.arpSpeeds.length);
+        currentVariation.fmRange = evolveIndex(currentVariation.fmRange, pools.fmRanges.length);
+        currentVariation.filterRange = evolveIndex(currentVariation.filterRange, pools.filterRanges.length);
+    }
+
+    // Graceful transition for radical shifts
+    function gracefulTransition(callback) {
+        cycleState.isTransitioning = true;
+        status.textContent = 'Transitioning...';
+
+        // Let current pattern ring out for 2 seconds
+        setTimeout(() => {
+            if (typeof hush === 'function') {
+                hush();
+            }
+
+            // Wait for reverb/delay tails to decay
+            setTimeout(() => {
+                cycleState.isTransitioning = false;
+                if (callback) callback();
+            }, 1500);
+        }, 2000);
+    }
+
+    // Randomize all variations (for initial start)
+    function randomizeVariations() {
+        const pools = evolutionPools;
+        currentVariation.bassNotes = Math.floor(Math.random() * pools.bassNotes.length);
+        currentVariation.subNotes = Math.floor(Math.random() * pools.subNotes.length);
+        currentVariation.highNotes = Math.floor(Math.random() * pools.highNotes.length);
+        currentVariation.chords = Math.floor(Math.random() * pools.chords.length);
+        currentVariation.arpeggios = Math.floor(Math.random() * pools.arpeggios.length);
+        currentVariation.kickPattern = Math.floor(Math.random() * pools.kickPatterns.length);
+        currentVariation.hatPattern = Math.floor(Math.random() * pools.hatPatterns.length);
+        currentVariation.snarePattern = Math.floor(Math.random() * pools.snarePatterns.length);
+        currentVariation.arpSpeed = Math.floor(Math.random() * pools.arpSpeeds.length);
+        currentVariation.fmRange = Math.floor(Math.random() * pools.fmRanges.length);
+        currentVariation.filterRange = Math.floor(Math.random() * pools.filterRanges.length);
+    }
 
     // DOM elements
     const moodButtons = document.querySelectorAll('.mood-btn');
@@ -487,6 +714,7 @@
     const spaceBar = document.getElementById('space-bar');
     const cycleTimerFill = document.getElementById('cycle-timer-fill');
     const cycleCount = document.getElementById('cycle-count');
+    const cycleTimerLabel = document.querySelector('.cycle-timer-label');
 
     // Wait for Strudel to load and initialize
     async function initStrudelApp() {
@@ -548,18 +776,54 @@
         const progress = Math.min(elapsed / cycleState.duration, 1);
         cycleTimerFill.style.width = `${progress * 100}%`;
 
+        // Check if next cycle will be a radical shift
+        const nextCycleInEpoch = (cycleState.count % cycleState.cyclesPerEpoch) + 1;
+        const isNextRadical = nextCycleInEpoch === cycleState.cyclesPerEpoch;
+        cycleTimerFill.classList.toggle('radical', isNextRadical);
+        cycleTimerLabel.classList.toggle('radical', isNextRadical);
+        cycleTimerLabel.textContent = isNextRadical ? 'Radical Shift' : 'Next Evolution';
+
         // Check if cycle completed
-        if (elapsed >= cycleState.duration) {
+        if (elapsed >= cycleState.duration && !cycleState.isTransitioning) {
             cycleState.count++;
             cycleState.startTime = now;
-            cycleCount.textContent = `Cycle ${cycleState.count}`;
+
+            const cycleInEpoch = ((cycleState.count - 1) % cycleState.cyclesPerEpoch) + 1;
+            const isRadicalShift = cycleInEpoch === cycleState.cyclesPerEpoch;
+
+            if (isRadicalShift) {
+                cycleState.epoch++;
+            }
+
+            // Update display
+            cycleCount.textContent = `Epoch ${cycleState.epoch} · ${cycleInEpoch}/${cycleState.cyclesPerEpoch}`;
 
             // Pulse animation on cycle complete
             cycleTimerFill.classList.add('pulse');
             setTimeout(() => cycleTimerFill.classList.remove('pulse'), 400);
 
-            // Randomize next cycle duration (8-16 seconds)
-            cycleState.duration = 8000 + Math.random() * 8000;
+            if (isRadicalShift) {
+                // Radical shift: graceful transition with structural changes
+                gracefulTransition(() => {
+                    evolveRadical();
+                    if (isPlaying && currentMood) {
+                        status.textContent = `${currentMood.toUpperCase()} · Epoch ${cycleState.epoch}`;
+                        playPattern();
+                    }
+                });
+            } else {
+                // Subtle shift: tonal/timbral changes, smooth pattern update
+                evolveSubtle();
+                if (isPlaying && currentMood) {
+                    // Rebuild pattern with new timbral values (Strudel replaces smoothly)
+                    playPattern(true); // true = subtle mode, no hush
+                }
+            }
+
+            // Randomize next cycle duration
+            cycleState.duration = evolutionPools.cycleDurations[
+                Math.floor(Math.random() * evolutionPools.cycleDurations.length)
+            ];
         }
     }
 
@@ -567,9 +831,14 @@
     function resetCycleTimer() {
         cycleState.startTime = Date.now();
         cycleState.count = 0;
+        cycleState.epoch = 1;
         cycleState.duration = 12000;
+        cycleState.isTransitioning = false;
         cycleTimerFill.style.width = '0%';
-        cycleCount.textContent = 'Cycle 0';
+        cycleTimerFill.classList.remove('radical');
+        cycleTimerLabel.classList.remove('radical');
+        cycleTimerLabel.textContent = 'Next Evolution';
+        cycleCount.textContent = `Epoch 1 · 0/${cycleState.cyclesPerEpoch}`;
     }
 
     // Mood selection
@@ -605,7 +874,8 @@
         status.textContent = `${currentMood.toUpperCase()} active`;
         status.classList.add('playing');
 
-        // Reset and start cycle timer
+        // Randomize initial variations and reset cycle timer
+        randomizeVariations();
         resetCycleTimer();
 
         // Start evolution animation
@@ -624,21 +894,42 @@
         }
         // Reset timer display
         cycleTimerFill.style.width = '0%';
-        cycleCount.textContent = 'Cycle 0';
+        cycleTimerFill.classList.remove('radical');
+        cycleTimerLabel.classList.remove('radical');
+        cycleTimerLabel.textContent = 'Next Evolution';
+        cycleCount.textContent = `Epoch 0 · 0/${cycleState.cyclesPerEpoch}`;
+        cycleState.isTransitioning = false;
 
         status.textContent = currentMood ? `${currentMood.toUpperCase()} halted` : 'Halted';
         status.classList.remove('playing');
         codeContent.innerHTML = '<div class="code-comment">// Pattern halted</div>';
     });
 
-    function playPattern() {
+    function playPattern(subtle = false) {
         if (!currentMood || !strudelReady) return;
 
-        console.log('Playing mood:', currentMood);
+        console.log('Playing mood:', currentMood, 'Cycle:', cycleState.count, subtle ? '(subtle)' : '');
 
-        if (typeof hush === 'function') {
+        // For subtle changes, don't hush - let Strudel crossfade
+        // For radical changes and initial play, hush first
+        if (!subtle && typeof hush === 'function') {
             hush();
         }
+
+        // Get current variations from pools
+        const v = currentVariation;
+        const pools = evolutionPools;
+        const bassNotes = pools.bassNotes[v.bassNotes];
+        const subNotes = pools.subNotes[v.subNotes];
+        const highNotes = pools.highNotes[v.highNotes];
+        const chordNotes = pools.chords[v.chords];
+        const arpNotes = pools.arpeggios[v.arpeggios];
+        const kickPat = pools.kickPatterns[v.kickPattern];
+        const hatPat = pools.hatPatterns[v.hatPattern];
+        const snarePat = pools.snarePatterns[v.snarePattern];
+        const arpSpeed = pools.arpSpeeds[v.arpSpeed];
+        const fmRange = pools.fmRanges[v.fmRange];
+        const filterRange = pools.filterRanges[v.filterRange];
 
         let codeLines = [];
 
@@ -650,39 +941,40 @@
                     // Cold FM textures with machine pulse
                     codeLines = [
                         '// METALLIC - Cold FM textures',
+                        `// Epoch ${cycleState.epoch} · Cycle ${cycleState.count}${subtle ? ' (subtle)' : ''}`,
                         'stack(',
-                        '  s("bd(3,8)").bank("RolandTR909")',
+                        `  s("${kickPat}").bank("RolandTR909")`,
                         '    .gain(0.6).room(0.4).lpf(800),',
-                        '  s("hh(11,16)").bank("RolandTR808")',
+                        `  s("${hatPat}").bank("RolandTR808")`,
                         '    .n(irand(4)).gain(0.35).room(0.7)',
                         '    .delay(0.3).pan(rand.range(0.3,0.7)).hpf(3000),',
-                        '  note("<c2 eb2 f2 ab2>/4").s("sawtooth")',
-                        '    .fm(perlin.range(2,5).slow(8))',
+                        `  note("${bassNotes}/4").s("sawtooth")`,
+                        `    .fm(perlin.range(${fmRange[0]},${fmRange[1]}).slow(8))`,
                         '    .fmh(sine.range(0.5,2).slow(6))',
-                        '    .lpf(perlin.range(300,600).slow(4))',
+                        `    .lpf(perlin.range(${filterRange[0]},${filterRange[1]}).slow(4))`,
                         '    .lpq(8).gain(0.5).room(0.3),',
-                        '  note("<c5 ~ eb5 ~ ~ f5 ~ ~>/2").s("square")',
+                        `  note("${highNotes}/2").s("square")`,
                         '    .lpf(2000).gain(0.2).room(0.8)',
                         '    .delay(0.5).pan(rand)',
                         ')'
                     ];
                     pattern = stack(
-                        s("bd(3,8)").bank("RolandTR909")
+                        s(kickPat).bank("RolandTR909")
                             .gain(0.6).room(0.4).lpf(800),
-                        s("hh(11,16)").bank("RolandTR808")
+                        s(hatPat).bank("RolandTR808")
                             .n(irand(4)).gain(0.35).room(0.7)
                             .delay(0.3).pan(rand.range(0.3, 0.7)).hpf(3000),
-                        s("~ sd(3,8,<0 2 1>)").bank("RolandTR909")
+                        s(snarePat).bank("RolandTR909")
                             .gain(0.5).room(0.6),
-                        note("<c2 eb2 f2 ab2>/4")
+                        note(bassNotes + "/4")
                             .s("sawtooth")
-                            .fm(perlin.range(2, 5).slow(8))
+                            .fm(perlin.range(fmRange[0], fmRange[1]).slow(8))
                             .fmh(sine.range(0.5, 2).slow(6))
-                            .lpf(perlin.range(300, 600).slow(4))
+                            .lpf(perlin.range(filterRange[0], filterRange[1]).slow(4))
                             .lpq(8)
                             .gain(0.5)
                             .room(0.3),
-                        note("<c5 ~ eb5 ~ ~ f5 ~ ~>/2")
+                        note(highNotes + "/2")
                             .s("square")
                             .lpf(2000)
                             .gain(0.2)
@@ -696,38 +988,39 @@
                     // Granular glitch, bit-crushed textures
                     codeLines = [
                         '// FRACTURED - Granular glitch',
+                        `// Epoch ${cycleState.epoch} · Cycle ${cycleState.count}${subtle ? ' (subtle)' : ''}`,
                         'stack(',
-                        '  s("bd ~ bd:1 ~").bank("RolandTR909")',
+                        `  s("${kickPat}").bank("RolandTR909")`,
                         '    .gain(0.65).room(0.4).lpf(600),',
-                        '  s("hh*<8 12 16 6>").bank("RolandTR808")',
+                        `  s("${hatPat}").bank("RolandTR808")`,
                         '    .n(irand(4)).gain(rand.range(0.2,0.45))',
                         '    .room(0.8).delay(0.5).hpf(4000).pan(rand),',
-                        '  note("<c4 eb4 f4 ab4>*4").s("triangle")',
+                        `  note("${arpNotes}".fast("${arpSpeed}")).s("triangle")`,
                         '    .chop("<2 4 8 4>").coarse("<8 16 32 16>")',
-                        '    .lpf(perlin.range(1000,2000).slow(4))',
+                        `    .lpf(perlin.range(${filterRange[0]},${filterRange[1]}).slow(4))`,
                         '    .gain(0.25).room(1.0).delay(0.6).pan(rand),',
-                        '  note("<c2 f2>/4").s("square").fm(2)',
+                        `  note("${bassNotes}/4").s("square").fm(2)`,
                         '    .lpf(350).lpq(20).gain(0.4).room(0.5)',
                         ')'
                     ];
                     pattern = stack(
-                        s("bd ~ bd:1 ~").bank("RolandTR909")
+                        s(kickPat).bank("RolandTR909")
                             .gain(0.65).room(0.4).lpf(600),
-                        s("hh*<8 12 16 6>").bank("RolandTR808")
+                        s(hatPat).bank("RolandTR808")
                             .n(irand(4)).gain(rand.range(0.2, 0.45))
                             .room(0.8).delay(0.5).hpf(4000).pan(rand),
-                        s("~ [sd cp] ~ <sd rim>").bank("RolandTR909")
+                        s(snarePat).bank("RolandTR909")
                             .gain(0.5).room(0.7),
-                        note("<c4 eb4 f4 ab4>*4")
+                        note(arpNotes).fast(arpSpeed)
                             .s("triangle")
                             .chop("<2 4 8 4>")
                             .coarse("<8 16 32 16>")
-                            .lpf(perlin.range(1000, 2000).slow(4))
+                            .lpf(perlin.range(filterRange[0], filterRange[1]).slow(4))
                             .gain(0.25)
                             .room(1.0)
                             .delay(0.6)
                             .pan(rand),
-                        note("<c2 f2>/4")
+                        note(bassNotes + "/4")
                             .s("square")
                             .fm(2)
                             .lpf(350)
@@ -741,44 +1034,45 @@
                     // Deep sub bass with filtered darkness
                     codeLines = [
                         '// SUBMERGED - Deep filtered darkness',
+                        `// Epoch ${cycleState.epoch} · Cycle ${cycleState.count}${subtle ? ' (subtle)' : ''}`,
                         'stack(',
-                        '  s("bd(5,8)").bank("RolandTR909")',
+                        `  s("${kickPat}").bank("RolandTR909")`,
                         '    .gain(0.7).room(0.3).lpf(700).distort(0.2),',
-                        '  s("hh(13,16)").bank("RolandTR808")',
+                        `  s("${hatPat}").bank("RolandTR808")`,
                         '    .n(irand(3)).gain(0.3).room(0.6).hpf(3500),',
-                        '  note("<c1 ~ eb1 ~ f1 ~ ab1 ~>/2").s("sine")',
+                        `  note("${subNotes}/2").s("sine")`,
                         '    .gain(0.7).lpf(120).room(0.2),',
-                        '  note("<c2 ~ f2 ~ ab2 ~>/2").s("sawtooth")',
-                        '    .fm(4).fmh(2)',
-                        '    .lpf(perlin.range(200,500).slow(8))',
+                        `  note("${bassNotes}/2").s("sawtooth")`,
+                        `    .fm(${fmRange[0]}).fmh(2)`,
+                        `    .lpf(perlin.range(${filterRange[0]},${filterRange[1]}).slow(8))`,
                         '    .lpq(15).gain(0.5).room(0.4).distort(0.15),',
-                        '  note("<[c3,eb3,g3]>/8").s("sawtooth")',
+                        `  note("${chordNotes}/8").s("sawtooth")`,
                         '    .lpf(sine.range(300,700).slow(16))',
                         '    .gain(0.25).room(1.5).attack(2).release(3)',
                         ').slow(1.5)'
                     ];
                     pattern = stack(
-                        s("bd(5,8)").bank("RolandTR909")
+                        s(kickPat).bank("RolandTR909")
                             .gain(0.7).room(0.3).lpf(700).distort(0.2),
-                        s("hh(13,16)").bank("RolandTR808")
+                        s(hatPat).bank("RolandTR808")
                             .n(irand(3)).gain(0.3).room(0.6).hpf(3500),
                         s("oh(5,8,<0 1 2>)").bank("RolandTR909")
                             .gain(0.25).room(1.0).delay(0.6),
-                        note("<c1 ~ eb1 ~ f1 ~ ab1 ~>/2")
+                        note(subNotes + "/2")
                             .s("sine")
                             .gain(0.7)
                             .lpf(120)
                             .room(0.2),
-                        note("<c2 ~ f2 ~ ab2 ~>/2")
+                        note(bassNotes + "/2")
                             .s("sawtooth")
-                            .fm(4)
+                            .fm(fmRange[0])
                             .fmh(2)
-                            .lpf(perlin.range(200, 500).slow(8))
+                            .lpf(perlin.range(filterRange[0], filterRange[1]).slow(8))
                             .lpq(15)
                             .gain(0.5)
                             .room(0.4)
                             .distort(0.15),
-                        note("<[c3,eb3,g3] [bb2,db3,f3] [ab2,c3,eb3]>/8")
+                        note(chordNotes + "/8")
                             .s("sawtooth")
                             .lpf(sine.range(300, 700).slow(16))
                             .lpq(10)
@@ -793,40 +1087,41 @@
                     // Polyrhythmic complexity with euclidean patterns
                     codeLines = [
                         '// ALGORITHMIC - Polyrhythmic complexity',
+                        `// Epoch ${cycleState.epoch} · Cycle ${cycleState.count}${subtle ? ' (subtle)' : ''}`,
                         'stack(',
-                        '  s("bd(<3 5 2 4>,<8 7 9 11>)").bank("RolandTR909")',
+                        `  s("${kickPat}").bank("RolandTR909")`,
                         '    .gain(0.6).room(0.4).lpf("<700 900 600>"),',
-                        '  s("hh(<13 17 11>,<16 16 16>)").bank("RolandTR808")',
+                        `  s("${hatPat}").bank("RolandTR808")`,
                         '    .n(irand(4)).gain(rand.range(0.25,0.4))',
                         '    .room(perlin.range(0.5,0.9).slow(8))',
                         '    .delay(perlin.range(0.3,0.6).slow(4))',
                         '    .hpf(rand.range(3000,5000)).pan(rand),',
-                        '  s("sd(<3 4 5>,<8 9 7>,<0 1 2 3>)").bank("RolandTR909")',
+                        `  s("${snarePat}").bank("RolandTR909")`,
                         '    .gain(0.5).room(0.6),',
-                        '  note("c4 eb4 g4 bb4 d5 bb4 g4 eb4".fast("<1 1.5 2>"))',
-                        '    .s("square").lpf(perlin.range(1000,2500).slow(4))',
+                        `  note("${arpNotes}".fast("${arpSpeed}"))`,
+                        `    .s("square").lpf(perlin.range(${filterRange[0]},${filterRange[1]}).slow(4))`,
                         '    .gain(0.2).room(0.8).delay(0.5),',
-                        '  note("<c1 f1>/8").s("sine").fm(0.5)',
+                        `  note("${subNotes}/4").s("sine").fm(0.5)`,
                         '    .gain(0.45).lpf(200).room(0.8)',
                         ')'
                     ];
                     pattern = stack(
-                        s("bd(<3 5 2 4>,<8 7 9 11>)").bank("RolandTR909")
+                        s(kickPat).bank("RolandTR909")
                             .gain(0.6).room(0.4).lpf("<700 900 600>"),
-                        s("hh(<13 17 11>,<16 16 16>)").bank("RolandTR808")
+                        s(hatPat).bank("RolandTR808")
                             .n(irand(4)).gain(rand.range(0.25, 0.4))
                             .room(perlin.range(0.5, 0.9).slow(8))
                             .delay(perlin.range(0.3, 0.6).slow(4))
                             .hpf(rand.range(3000, 5000)).pan(rand),
-                        s("sd(<3 4 5>,<8 9 7>,<0 1 2 3>)").bank("RolandTR909")
+                        s(snarePat).bank("RolandTR909")
                             .gain(0.5).room(0.6),
-                        note("c4 eb4 g4 bb4 d5 bb4 g4 eb4".fast("<1 1.5 2>"))
+                        note(arpNotes).fast(arpSpeed)
                             .s("square")
-                            .lpf(perlin.range(1000, 2500).slow(4))
+                            .lpf(perlin.range(filterRange[0], filterRange[1]).slow(4))
                             .gain(0.2)
                             .room(0.8)
                             .delay(0.5),
-                        note("<c1 f1>/8")
+                        note(subNotes + "/4")
                             .s("sine")
                             .fm(0.5)
                             .gain(0.45)
@@ -839,35 +1134,36 @@
                     // FM bells, sparse and ethereal
                     codeLines = [
                         '// CRYSTALLINE - FM bells, ethereal',
+                        `// Epoch ${cycleState.epoch} · Cycle ${cycleState.count}${subtle ? ' (subtle)' : ''}`,
                         'stack(',
-                        '  s("bd*3").bank("RolandTR909")',
+                        `  s("${kickPat}").bank("RolandTR909")`,
                         '    .gain(0.6).room(0.4).lpf(700).slow(2),',
-                        '  s("hh*13").bank("RolandTR808")',
+                        `  s("${hatPat}").bank("RolandTR808")`,
                         '    .n(irand(4)).gain(rand.range(0.25,0.35))',
                         '    .room(0.7).delay(0.3).hpf(3500).slow(2),',
-                        '  note("<c5 ~ eb5 ~ g5 ~ bb5 ~ c6 ~>/2").s("sine")',
-                        '    .fm(sine.range(4,12).slow(12))',
+                        `  note("${highNotes}/2").s("sine")`,
+                        `    .fm(sine.range(${fmRange[0]},${fmRange[1]}).slow(12))`,
                         '    .fmh(perlin.range(2,6).slow(8))',
                         '    .lpf(4000).gain(0.22).room(1.5)',
                         '    .delay(0.7).delaytime("<0.25 0.375 0.5>").pan(rand),',
-                        '  note("~ c5 ~ ~ ~ eb5 ~ ~ ~ ~ g5 ~ ~ ~ bb5 ~")',
-                        '    .s("sine").lpf(3000).gain(0.25)',
+                        `  note("${arpNotes}".slow(2)).s("sine")`,
+                        '    .lpf(3000).gain(0.2)',
                         '    .room(1.2).delay(0.7).delayfeedback(0.8),',
-                        '  note("<[c3,e3,g3] [bb2,d3,f3]>/8").s("sawtooth")',
+                        `  note("${chordNotes}/8").s("sawtooth")`,
                         '    .chop(16).lpf(900).gain(0.18).room(1.3)',
                         ')'
                     ];
                     pattern = stack(
-                        s("bd*3").bank("RolandTR909")
+                        s(kickPat).bank("RolandTR909")
                             .gain(0.6).room(0.4).lpf(700).slow(2),
-                        s("hh*13").bank("RolandTR808")
+                        s(hatPat).bank("RolandTR808")
                             .n(irand(4)).gain(rand.range(0.25, 0.35))
                             .room(0.7).delay(0.3).hpf(3500).slow(2),
-                        s("sd*5").bank("RolandTR909")
+                        s(snarePat).bank("RolandTR909")
                             .gain(0.45).room(0.6).slow(2),
-                        note("<c5 ~ eb5 ~ g5 ~ bb5 ~ c6 ~>/2")
+                        note(highNotes + "/2")
                             .s("sine")
-                            .fm(sine.range(4, 12).slow(12))
+                            .fm(sine.range(fmRange[0], fmRange[1]).slow(12))
                             .fmh(perlin.range(2, 6).slow(8))
                             .lpf(4000)
                             .gain(0.22)
@@ -875,14 +1171,14 @@
                             .delay(0.7)
                             .delaytime("<0.25 0.375 0.5>")
                             .pan(rand),
-                        note("~ c5 ~ ~ ~ eb5 ~ ~ ~ ~ g5 ~ ~ ~ bb5 ~")
+                        note(arpNotes).slow(2)
                             .s("sine")
                             .lpf(3000)
-                            .gain(0.25)
+                            .gain(0.2)
                             .room(1.2)
                             .delay(0.7)
                             .delayfeedback(0.8),
-                        note("<[c3,e3,g3] [bb2,d3,f3]>/8")
+                        note(chordNotes + "/8")
                             .s("sawtooth")
                             .chop(16)
                             .lpf(900)
@@ -895,52 +1191,55 @@
                     // Resonant, mechanical, raw
                     codeLines = [
                         '// INDUSTRIAL - Resonant mechanical',
+                        `// Epoch ${cycleState.epoch} · Cycle ${cycleState.count}${subtle ? ' (subtle)' : ''}`,
                         'stack(',
-                        '  s("bd(<3 5>,<8 9>)").bank("RolandTR909")',
+                        `  s("${kickPat}").bank("RolandTR909")`,
                         '    .gain(0.7).room(0.4).lpf(700)',
                         '    .sometimes(x => x.distort(0.3)),',
-                        '  s("hh(<11 13>,16)").bank("RolandTR808")',
+                        `  s("${hatPat}").bank("RolandTR808")`,
                         '    .n(irand(4)).gain(rand.range(0.3,0.45))',
                         '    .room(0.7).delay(0.4).hpf(3800)',
                         '    .sometimes(x => x.chop(2)),',
-                        '  note("<c2 eb2 f2 ab2 bb2>/2").s("sawtooth")',
-                        '    .fm(perlin.range(2,8).slow(8))',
+                        `  note("${bassNotes}/2").s("sawtooth")`,
+                        `    .fm(perlin.range(${fmRange[0]},${fmRange[1]}).slow(8))`,
                         '    .fmh(sine.range(1,4).slow(6))',
-                        '    .lpf(perlin.range(300,800).slow(4))',
+                        `    .lpf(perlin.range(${filterRange[0]},${filterRange[1]}).slow(4))`,
                         '    .lpq(18).gain(0.55).room(0.5).distort(0.2),',
-                        '  note("<c4 db4 e4 f4 ab4 bb4>*2".add(irand(7)))',
+                        `  note("${arpNotes}".fast("${arpSpeed}").add(irand(7)))`,
                         '    .s("square").lpf(perlin.range(800,2000).slow(4))',
-                        '    .lpq(6).gain(0.3).room(0.8).delay(0.5)',
+                        '    .lpq(6).gain(0.3).room(0.8).delay(0.5),',
+                        `  note("${chordNotes}/16").s("sawtooth")`,
+                        '    .lpf(400).gain(0.3).room(1.5).attack(3).release(4)',
                         ')'
                     ];
                     pattern = stack(
-                        s("bd(<3 5>,<8 9>)").bank("RolandTR909")
+                        s(kickPat).bank("RolandTR909")
                             .gain(0.7).room(0.4).lpf(700)
                             .sometimes(x => x.distort(0.3)),
-                        s("hh(<11 13>,16)").bank("RolandTR808")
+                        s(hatPat).bank("RolandTR808")
                             .n(irand(4)).gain(rand.range(0.3, 0.45))
                             .room(0.7).delay(0.4).hpf(3800)
                             .sometimes(x => x.chop(2))
                             .rarely(x => x.fast(2)),
-                        s("sd(<3 4>,<8 7>,<0 2>)").bank("RolandTR909")
+                        s(snarePat).bank("RolandTR909")
                             .gain(0.55).room(0.6),
-                        note("<c2 eb2 f2 ab2 bb2>/2")
+                        note(bassNotes + "/2")
                             .s("sawtooth")
-                            .fm(perlin.range(2, 8).slow(8))
+                            .fm(perlin.range(fmRange[0], fmRange[1]).slow(8))
                             .fmh(sine.range(1, 4).slow(6))
-                            .lpf(perlin.range(300, 800).slow(4))
+                            .lpf(perlin.range(filterRange[0], filterRange[1]).slow(4))
                             .lpq(18)
                             .gain(0.55)
                             .room(0.5)
                             .distort(0.2),
-                        note("<c4 db4 e4 f4 ab4 bb4>*2".add(irand(7)))
+                        note(arpNotes).fast(arpSpeed).add(irand(7))
                             .s("square")
                             .lpf(perlin.range(800, 2000).slow(4))
                             .lpq(6)
                             .gain(0.3)
                             .room(0.8)
                             .delay(0.5),
-                        note("<[c2,e2,g2] [db2,f2,ab2]>/16")
+                        note(chordNotes + "/16")
                             .s("sawtooth")
                             .lpf(400)
                             .gain(0.3)
