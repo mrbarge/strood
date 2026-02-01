@@ -509,59 +509,68 @@
     };
 
     // Musical variation pools for evolution
+    // HARMONIC ORGANIZATION:
+    // - IDM moods (metallic, fractured, submerged, algorithmic, crystalline, industrial)
+    //   use C natural minor: C, D, Eb, F, G, Ab, Bb
+    // - Dreamy moods (ethereal, nostalgia, drift)
+    //   use G major / C Lydian: G, A, B, C, D, E, F#
+    // All variations within each family are harmonically compatible
     const evolutionPools = {
-        // Bass note sequences (minor/chromatic)
+        // === C MINOR FAMILY (for IDM moods) ===
+        // All in C natural minor: C, D, Eb, F, G, Ab, Bb
+
+        // Bass note sequences (C minor)
         bassNotes: [
-            "<c2 eb2 f2 ab2>",
-            "<c2 f2 ab2 bb2>",
-            "<eb2 f2 ab2 c3>",
-            "<f2 ab2 bb2 c3>",
-            "<ab1 c2 eb2 f2>",
-            "<bb1 c2 eb2 ab2>",
-            "<c2 db2 f2 ab2>",
-            "<eb2 gb2 ab2 bb2>"
+            "<c2 eb2 g2 bb2>",      // Cm7 arpeggio
+            "<c2 f2 g2 bb2>",       // Cm7 variation
+            "<c2 eb2 f2 g2>",       // Cm add4
+            "<c2 g2 bb2 c3>",       // Cm octave
+            "<c2 eb2 ab2 g2>",      // Cm - Ab
+            "<c2 f2 ab2 g2>",       // C - F - Ab - G
+            "<c2 bb1 ab1 g1>",      // Descending
+            "<c2 d2 eb2 g2>"        // C minor scale fragment
         ],
-        // Sub bass notes
+        // Sub bass notes (root movement in C minor)
         subNotes: [
-            "<c1 ~ eb1 ~ f1 ~ ab1 ~>",
-            "<c1 ~ f1 ~ ab1 ~ bb1 ~>",
-            "<eb1 ~ f1 ~ ab1 ~ c2 ~>",
-            "<f1 ~ ab1 ~ c2 ~ eb2 ~>",
-            "<ab0 ~ c1 ~ eb1 ~ f1 ~>",
-            "<c1 ~ ~ eb1 ~ ~ f1 ~>"
+            "<c1 ~ c1 ~ g1 ~ g1 ~>",       // C - G pedal
+            "<c1 ~ eb1 ~ f1 ~ g1 ~>",      // Scale walk
+            "<c1 ~ ~ c1 ~ ~ g1 ~>",        // Sparse C - G
+            "<c1 ~ f1 ~ c1 ~ g1 ~>",       // C - F - C - G
+            "<c1 ~ ab0 ~ bb0 ~ c1 ~>",     // Ab - Bb - C
+            "<c1 ~ ~ ~ g1 ~ ~ ~>"          // Very sparse
         ],
-        // High melodic fragments
+        // High melodic fragments (C minor pentatonic: C, Eb, F, G, Bb)
         highNotes: [
-            "<c5 ~ eb5 ~ ~ f5 ~ ~>",
-            "<eb5 ~ g5 ~ ~ bb5 ~ ~>",
-            "<f5 ~ ab5 ~ ~ c6 ~ ~>",
+            "<c5 ~ eb5 ~ ~ g5 ~ ~>",
+            "<eb5 ~ g5 ~ ~ c6 ~ ~>",
             "<g5 ~ bb5 ~ ~ c6 ~ ~>",
-            "<ab5 ~ c6 ~ ~ eb6 ~ ~>",
-            "<bb5 ~ ~ c6 ~ ~ eb6 ~>",
-            "~ c5 ~ ~ ~ eb5 ~ ~ ~ ~ g5 ~ ~ ~ bb5 ~",
-            "~ ~ eb5 ~ ~ ~ ab5 ~ ~ ~ c6 ~ ~ ~ ~ ~"
+            "<c5 ~ f5 ~ ~ g5 ~ ~>",
+            "<bb4 ~ c5 ~ ~ eb5 ~ ~>",
+            "<g5 ~ ~ c6 ~ ~ eb6 ~>",
+            "~ c5 ~ ~ ~ eb5 ~ ~ ~ ~ g5 ~ ~ ~ c6 ~",
+            "~ ~ eb5 ~ ~ ~ g5 ~ ~ ~ bb5 ~ ~ ~ ~ ~"
         ],
-        // Chord voicings (dark, dissonant)
+        // Chord voicings (C minor family - Cm, Fm, Gm, Ab, Bb, Eb)
         chords: [
-            "<[c3,eb3,g3] [bb2,db3,f3] [ab2,c3,eb3]>",
-            "<[c3,eb3,gb3,bb3] [db3,f3,ab3,c4]>",
-            "<[eb3,g3,bb3] [db3,f3,ab3] [c3,eb3,g3]>",
-            "<[f3,ab3,c4] [eb3,gb3,bb3] [db3,f3,ab3]>",
-            "<[ab2,c3,eb3,g3] [bb2,db3,f3,ab3]>",
-            "<[c3,e3,g3,b3] [db3,f3,ab3,c4] [d3,gb3,a3]>",
-            "<[eb3,g3,b3,d4] [c3,eb3,ab3]>",
-            "<[f3,a3,c4,eb4] [gb3,bb3,db4]>"
+            "<[c3,eb3,g3] [f3,ab3,c4] [g3,bb3,d4]>",           // Cm - Fm - Gm
+            "<[c3,eb3,g3,bb3] [ab2,c3,eb3,g3]>",               // Cm7 - Abmaj7
+            "<[eb3,g3,bb3] [ab2,c3,eb3] [bb2,d3,f3]>",         // Eb - Ab - Bb
+            "<[c3,eb3,g3] [bb2,d3,f3] [ab2,c3,eb3]>",          // Cm - Bb - Ab
+            "<[f3,ab3,c4] [eb3,g3,bb3] [c3,eb3,g3]>",          // Fm - Eb - Cm
+            "<[g3,bb3,d4] [f3,ab3,c4] [eb3,g3,bb3]>",          // Gm - Fm - Eb
+            "<[c3,eb3,bb3] [ab2,eb3,g3] [bb2,f3,ab3]>",        // Cm7 - Ab - Bb
+            "<[c3,g3,c4] [eb3,bb3,eb4] [f3,c4,f4]>"            // Open voicings
         ],
-        // Arpeggios
+        // Arpeggios (C minor family)
         arpeggios: [
-            "c4 eb4 g4 bb4 d5 bb4 g4 eb4",
-            "eb4 g4 bb4 c5 eb5 c5 bb4 g4",
-            "f4 ab4 c5 eb5 f5 eb5 c5 ab4",
-            "ab4 c5 eb5 g5 ab5 g5 eb5 c5",
-            "c4 eb4 gb4 bb4 c5 bb4 gb4 eb4",
-            "db4 f4 ab4 c5 db5 c5 ab4 f4",
-            "bb3 db4 f4 ab4 bb4 ab4 f4 db4",
-            "g4 bb4 db5 f5 g5 f5 db5 bb4"
+            "c4 eb4 g4 bb4 c5 bb4 g4 eb4",     // Cm7
+            "c4 eb4 g4 c5 g4 eb4 c4 g3",       // Cm
+            "eb4 g4 bb4 eb5 bb4 g4 eb4 bb3",   // Eb
+            "f4 ab4 c5 f5 c5 ab4 f4 c4",       // Fm
+            "g4 bb4 d5 g5 d5 bb4 g4 d4",       // Gm
+            "ab3 c4 eb4 ab4 eb4 c4 ab3 eb3",   // Ab
+            "bb3 d4 f4 bb4 f4 d4 bb3 f3",      // Bb
+            "c4 g4 c5 eb5 c5 g4 eb4 c4"        // Cm spread
         ],
         // Euclidean kick patterns
         kickPatterns: [
@@ -607,41 +616,43 @@
         // Cycle durations (ms)
         cycleDurations: [10000, 12000, 14000, 16000, 18000, 20000],
 
-        // === DREAMY/AMBIENT POOLS ===
+        // === G MAJOR / C LYDIAN FAMILY (for dreamy moods) ===
+        // All in G major: G, A, B, C, D, E, F#
+        // Which is same as C Lydian: C, D, E, F#, G, A, B
 
-        // Warm pad chords (major, lydian, add9)
+        // Warm pad chords (G major family - Gmaj7, Am7, Bm7, Cmaj7#11, D7, Em7, F#m7b5)
         warmChords: [
-            "<[c3,e3,g3,b3] [d3,f#3,a3,c4] [e3,g#3,b3,d4]>",
-            "<[f3,a3,c4,e4] [g3,b3,d4,f#4] [a3,c#4,e4,g4]>",
-            "<[c3,e3,g3,d4] [f3,a3,c4,g4] [g3,b3,d4,a4]>",
-            "<[d3,f#3,a3,e4] [e3,g#3,b3,f#4] [a3,c#4,e4,b4]>",
-            "<[g3,b3,d4,f#4] [c4,e4,g4,b4]>",
-            "<[a3,c#4,e4,g#4] [d3,f#3,a3,c#4] [e3,g#3,b3,d#4]>",
-            "<[c3,e3,b3] [g3,b3,f#4] [d3,f#3,c4]>",
-            "<[f3,a3,e4] [c3,e3,b3] [g3,b3,f#4]>"
+            "<[g3,b3,d4,f#4] [c3,e3,g3,b3] [d3,f#3,a3,c4]>",   // Gmaj7 - Cmaj7 - D7
+            "<[c3,e3,g3,b3] [g3,b3,d4,f#4] [a3,c4,e4,g4]>",    // Cmaj7 - Gmaj7 - Am7
+            "<[e3,g3,b3,d4] [a3,c4,e4,g4] [d3,f#3,a3,c4]>",    // Em7 - Am7 - D7
+            "<[g3,b3,d4] [c3,e3,g3] [d3,f#3,a3]>",             // G - C - D
+            "<[c3,e3,g3,b3] [d3,f#3,a3,c4] [e3,g3,b3,d4]>",    // Cmaj7 - D7 - Em7
+            "<[a3,c4,e4] [g3,b3,d4] [e3,g3,b3]>",              // Am - G - Em
+            "<[g3,d4,g4] [c3,g3,c4] [d3,a3,d4]>",              // Open voicings
+            "<[e3,b3,e4] [a3,e4,a4] [g3,d4,g4]>"               // Open voicings
         ],
 
-        // Lydian/major arpeggios (bright, hopeful)
+        // Arpeggios (G major family)
         brightArpeggios: [
-            "c4 e4 g4 b4 c5 b4 g4 e4",
-            "f4 a4 c5 e5 f5 e5 c5 a4",
-            "g4 b4 d5 f#5 g5 f#5 d5 b4",
-            "d4 f#4 a4 c#5 d5 c#5 a4 f#4",
-            "a4 c#5 e5 g#5 a5 g#5 e5 c#5",
-            "e4 g#4 b4 d#5 e5 d#5 b4 g#4",
-            "c4 e4 g4 b4 d5 g4 e4 c4",
-            "g4 b4 d5 f#5 a5 d5 b4 g4"
+            "g4 b4 d5 g5 d5 b4 g4 d4",         // G
+            "c4 e4 g4 c5 g4 e4 c4 g3",         // C
+            "d4 f#4 a4 d5 a4 f#4 d4 a3",       // D
+            "e4 g4 b4 e5 b4 g4 e4 b3",         // Em
+            "a4 c5 e5 a5 e5 c5 a4 e4",         // Am
+            "g4 b4 d5 f#5 d5 b4 g4 d4",        // Gmaj7
+            "c4 e4 g4 b4 g4 e4 c4 g3",         // Cmaj7
+            "d4 a4 d5 f#5 d5 a4 f#4 d4"        // D spread
         ],
 
-        // Gentle melodic fragments (sparse, floating)
+        // Gentle melodic fragments (G major pentatonic: G, A, B, D, E)
         gentleMelodies: [
-            "~ c5 ~ ~ e5 ~ ~ g5 ~ ~ ~ b5 ~ ~ ~ ~",
-            "~ ~ d5 ~ ~ ~ f#5 ~ ~ ~ a5 ~ ~ ~ ~ ~",
-            "e5 ~ ~ ~ g5 ~ ~ ~ b5 ~ ~ ~ c6 ~ ~ ~",
-            "~ g5 ~ ~ ~ b5 ~ ~ ~ d6 ~ ~ ~ ~ ~ ~",
-            "~ ~ ~ a5 ~ ~ ~ c#6 ~ ~ ~ e6 ~ ~ ~ ~",
-            "c5 ~ ~ ~ ~ e5 ~ ~ ~ ~ g5 ~ ~ ~ ~ b5",
-            "~ f5 ~ ~ ~ ~ a5 ~ ~ ~ ~ c6 ~ ~ ~ ~",
+            "~ g5 ~ ~ b5 ~ ~ d6 ~ ~ ~ ~ ~ ~ ~ ~",
+            "~ ~ a5 ~ ~ ~ d6 ~ ~ ~ e6 ~ ~ ~ ~ ~",
+            "e5 ~ ~ ~ g5 ~ ~ ~ b5 ~ ~ ~ d6 ~ ~ ~",
+            "~ b5 ~ ~ ~ d6 ~ ~ ~ g6 ~ ~ ~ ~ ~ ~",
+            "~ ~ ~ g5 ~ ~ ~ b5 ~ ~ ~ e6 ~ ~ ~ ~",
+            "d5 ~ ~ ~ ~ g5 ~ ~ ~ ~ b5 ~ ~ ~ ~ d6",
+            "~ a5 ~ ~ ~ ~ d6 ~ ~ ~ ~ e6 ~ ~ ~ ~",
             "~ ~ ~ ~ g5 ~ ~ ~ ~ ~ b5 ~ ~ ~ ~ d6"
         ],
 
