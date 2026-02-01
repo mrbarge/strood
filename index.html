@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mood · Strudel Edition</title>
+    <title>Strood · Generative IDM</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,23 +15,24 @@
         }
 
         :root {
-            --bg-primary: #0a0e1a;
-            --bg-secondary: #121826;
-            --text-primary: #e8e9ed;
-            --text-secondary: #9aa5b8;
-            --accent: #6366f1;
-            --mood-color: #6366f1;
+            --bg-primary: #0a0a0c;
+            --bg-secondary: #111114;
+            --text-primary: #c8ccd4;
+            --text-secondary: #5a6070;
+            --accent: #4a9eff;
+            --mood-color: #4a9eff;
         }
 
         body {
-            font-family: 'Cormorant Garamond', serif;
+            font-family: 'Space Mono', monospace;
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            align-items: flex-start;
+            padding: 2rem 0;
+            overflow-x: hidden;
             position: relative;
         }
 
@@ -43,218 +44,252 @@
             width: 200%;
             height: 200%;
             background: radial-gradient(
-                    circle at 20% 50%,
+                    circle at 30% 40%,
                     var(--mood-color) 0%,
-                    transparent 50%
+                    transparent 40%
             ),
             radial-gradient(
-                    circle at 80% 80%,
+                    circle at 70% 70%,
                     var(--mood-color) 0%,
-                    transparent 50%
+                    transparent 40%
             );
-            opacity: 0.15;
-            filter: blur(80px);
-            animation: float 20s ease-in-out infinite;
+            opacity: 0.08;
+            filter: blur(100px);
+            animation: drift 30s ease-in-out infinite;
             pointer-events: none;
         }
 
-        @keyframes float {
+        @keyframes drift {
             0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(30px, -30px) rotate(120deg); }
-            66% { transform: translate(-20px, 20px) rotate(240deg); }
+            25% { transform: translate(20px, -40px) rotate(90deg); }
+            50% { transform: translate(-30px, 30px) rotate(180deg); }
+            75% { transform: translate(40px, 20px) rotate(270deg); }
         }
 
         .container {
             position: relative;
             z-index: 1;
-            max-width: 800px;
-            width: 90%;
-            padding: 3rem;
-            background: rgba(18, 24, 38, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            box-shadow:
-                    0 20px 60px rgba(0, 0, 0, 0.5),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            max-width: 900px;
+            width: 95%;
+            padding: 2.5rem;
+            background: rgba(17, 17, 20, 0.85);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
         }
 
         h1 {
-            font-size: 4rem;
-            font-weight: 300;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
+            font-size: 2rem;
+            font-weight: 400;
+            letter-spacing: 0.3em;
+            margin-bottom: 0.3rem;
+            text-transform: uppercase;
             text-align: center;
-            background: linear-gradient(135deg, var(--text-primary), var(--mood-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text-primary);
         }
 
         .subtitle {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.875rem;
+            font-size: 0.65rem;
             text-align: center;
             color: var(--text-secondary);
-            margin-bottom: 3rem;
-            letter-spacing: 0.2em;
+            margin-bottom: 2.5rem;
+            letter-spacing: 0.25em;
             text-transform: uppercase;
         }
 
         .mood-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 1rem;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
         }
 
         .mood-btn {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.25rem;
-            padding: 1.5rem 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: var(--text-primary);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            padding: 1.25rem 0.75rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 2px;
+            color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
             position: relative;
-            overflow: hidden;
-        }
-
-        .mood-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: var(--mood-color);
-            opacity: 0.2;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
         }
 
         .mood-btn:hover {
-            transform: translateY(-2px);
-            border-color: var(--mood-color);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .mood-btn:hover::before {
-            width: 200%;
-            height: 200%;
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: var(--text-primary);
         }
 
         .mood-btn.active {
             background: var(--mood-color);
             border-color: var(--mood-color);
-            color: white;
-            box-shadow: 0 0 30px var(--mood-color);
+            color: var(--bg-primary);
+            box-shadow: 0 0 40px rgba(74, 158, 255, 0.2);
         }
 
-        .controls {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            margin-bottom: 3rem;
+        .mood-btn .mood-desc {
+            display: block;
+            font-size: 0.55rem;
+            margin-top: 0.5rem;
+            opacity: 0.6;
+            letter-spacing: 0.1em;
+            text-transform: none;
         }
 
-        .control-group {
-            display: flex;
-            align-items: center;
+        .evolution-display {
+            margin-bottom: 2rem;
+            padding: 1.25rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 2px;
+        }
+
+        .evolution-header {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--mood-color);
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .evolution-bars {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 1rem;
         }
 
-        .control-label {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            min-width: 120px;
+        .evolution-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .evolution-bar-label {
+            font-size: 0.55rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
+            color: var(--text-secondary);
         }
 
-        .toggle {
-            position: relative;
-            width: 60px;
-            height: 32px;
+        .evolution-bar-track {
+            height: 4px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            cursor: pointer;
-            transition: background 0.3s;
+            border-radius: 2px;
+            overflow: hidden;
         }
 
-        .toggle::before {
-            content: '';
-            position: absolute;
-            top: 4px;
-            left: 4px;
-            width: 24px;
-            height: 24px;
-            background: var(--text-primary);
-            border-radius: 50%;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .toggle.active {
+        .evolution-bar-fill {
+            height: 100%;
             background: var(--mood-color);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+            width: 0%;
         }
 
-        .toggle.active::before {
-            left: 32px;
+        .cycle-timer {
+            margin-top: 1.25rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .cycle-timer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .cycle-timer-label {
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+        }
+
+        .cycle-timer-count {
+            font-size: 0.55rem;
+            color: var(--mood-color);
+            opacity: 0.8;
+        }
+
+        .cycle-timer-track {
+            height: 3px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .cycle-timer-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--mood-color), var(--mood-color));
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .cycle-timer-fill.pulse {
+            animation: timerPulse 0.4s ease-out;
+        }
+
+        @keyframes timerPulse {
+            0% {
+                box-shadow: 0 0 10px var(--mood-color);
+                opacity: 1;
+            }
+            100% {
+                box-shadow: 0 0 0px var(--mood-color);
+                opacity: 0.8;
+            }
         }
 
         .play-controls {
             display: flex;
-            gap: 1rem;
+            gap: 0.75rem;
             justify-content: center;
+            margin-bottom: 2rem;
         }
 
         .play-btn {
             font-family: 'Space Mono', monospace;
-            font-size: 0.875rem;
-            padding: 1rem 2.5rem;
+            font-size: 0.7rem;
+            padding: 0.9rem 2.5rem;
             background: var(--mood-color);
             border: none;
-            border-radius: 12px;
-            color: white;
+            border-radius: 2px;
+            color: var(--bg-primary);
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 0.2em;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+            transition: all 0.2s ease;
         }
 
         .play-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
-        }
-
-        .play-btn:active {
-            transform: translateY(0);
+            filter: brightness(1.1);
         }
 
         .play-btn.stop {
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: none;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
         }
 
         .play-btn.stop:hover {
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--text-primary);
         }
 
         .status {
             text-align: center;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.875rem;
+            font-size: 0.65rem;
             color: var(--text-secondary);
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
         }
 
         .status.playing {
@@ -262,66 +297,64 @@
         }
 
         .code-display {
-            margin-top: 2rem;
-            padding: 1.5rem;
+            margin-top: 1.5rem;
+            padding: 1.25rem;
             background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 2px;
+            font-size: 0.65rem;
             color: var(--text-secondary);
-            max-height: 200px;
+            max-height: 180px;
             overflow-y: auto;
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
         .code-display-header {
-            font-size: 0.7rem;
+            font-size: 0.55rem;
             text-transform: uppercase;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.2em;
             color: var(--mood-color);
             margin-bottom: 0.75rem;
-            opacity: 0.8;
+            opacity: 0.7;
         }
 
         .code-line {
             color: var(--text-primary);
-            margin: 0.25rem 0;
+            margin: 0.2rem 0;
         }
 
         .code-comment {
             color: var(--text-secondary);
-            opacity: 0.6;
+            opacity: 0.5;
         }
 
         .code-display::-webkit-scrollbar {
-            width: 8px;
+            width: 4px;
         }
 
         .code-display::-webkit-scrollbar-track {
             background: rgba(0, 0, 0, 0.2);
-            border-radius: 4px;
         }
 
         .code-display::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-        }
-
-        .code-display::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 2px;
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 2rem;
+                padding: 1.5rem;
             }
 
             h1 {
-                font-size: 2.5rem;
+                font-size: 1.5rem;
             }
 
             .mood-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .evolution-bars {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
@@ -329,47 +362,85 @@
 </head>
 <body>
 <div class="container">
-    <h1>Mood</h1>
-    <p class="subtitle">Generative Ambient Soundscapes</p>
+    <h1>Strood</h1>
+    <p class="subtitle">Evolving Generative Soundscapes</p>
 
     <div class="mood-grid">
-        <button class="mood-btn" data-mood="calm">Calm</button>
-        <button class="mood-btn" data-mood="melancholic">Melancholic</button>
-        <button class="mood-btn" data-mood="dreamy">Dreamy</button>
-        <button class="mood-btn" data-mood="mysterious">Mysterious</button>
-        <button class="mood-btn" data-mood="uplifting">Uplifting</button>
-        <button class="mood-btn" data-mood="contemplative">Contemplative</button>
+        <button class="mood-btn" data-mood="metallic">
+            Metallic
+            <span class="mood-desc">Cold FM textures, machine pulse</span>
+        </button>
+        <button class="mood-btn" data-mood="fractured">
+            Fractured
+            <span class="mood-desc">Granular glitch, bit decay</span>
+        </button>
+        <button class="mood-btn" data-mood="submerged">
+            Submerged
+            <span class="mood-desc">Deep sub, filtered darkness</span>
+        </button>
+        <button class="mood-btn" data-mood="algorithmic">
+            Algorithmic
+            <span class="mood-desc">Polyrhythmic complexity</span>
+        </button>
+        <button class="mood-btn" data-mood="crystalline">
+            Crystalline
+            <span class="mood-desc">FM bells, sparse ethereal</span>
+        </button>
+        <button class="mood-btn" data-mood="industrial">
+            Industrial
+            <span class="mood-desc">Resonant, mechanical, raw</span>
+        </button>
     </div>
 
-    <div class="controls">
-        <div class="control-group">
-            <span class="control-label">Add Melody</span>
-            <div class="toggle" id="melody-toggle"></div>
+    <div class="evolution-display">
+        <div class="evolution-header">Evolution State</div>
+        <div class="evolution-bars">
+            <div class="evolution-bar">
+                <span class="evolution-bar-label">Filter</span>
+                <div class="evolution-bar-track">
+                    <div class="evolution-bar-fill" id="filter-bar"></div>
+                </div>
+            </div>
+            <div class="evolution-bar">
+                <span class="evolution-bar-label">FM Depth</span>
+                <div class="evolution-bar-track">
+                    <div class="evolution-bar-fill" id="fm-bar"></div>
+                </div>
+            </div>
+            <div class="evolution-bar">
+                <span class="evolution-bar-label">Density</span>
+                <div class="evolution-bar-track">
+                    <div class="evolution-bar-fill" id="density-bar"></div>
+                </div>
+            </div>
+            <div class="evolution-bar">
+                <span class="evolution-bar-label">Space</span>
+                <div class="evolution-bar-track">
+                    <div class="evolution-bar-fill" id="space-bar"></div>
+                </div>
+            </div>
         </div>
-        <div class="control-group">
-            <span class="control-label">Ambient Noise</span>
-            <div class="toggle" id="noise-toggle"></div>
-        </div>
-        <div class="control-group">
-            <span class="control-label">Harmonics</span>
-            <div class="toggle" id="harmonics-toggle"></div>
-        </div>
-        <div class="control-group">
-            <span class="control-label">Add Rhythm</span>
-            <div class="toggle" id="rhythm-toggle"></div>
+        <div class="cycle-timer">
+            <div class="cycle-timer-header">
+                <span class="cycle-timer-label">Next Modulation</span>
+                <span class="cycle-timer-count" id="cycle-count">Cycle 0</span>
+            </div>
+            <div class="cycle-timer-track">
+                <div class="cycle-timer-fill" id="cycle-timer-fill"></div>
+            </div>
         </div>
     </div>
 
     <div class="play-controls">
-        <button class="play-btn" id="play-btn">Play</button>
-        <button class="play-btn stop" id="stop-btn">Stop</button>
+        <button class="play-btn" id="play-btn">Initiate</button>
+        <button class="play-btn stop" id="stop-btn">Halt</button>
     </div>
 
-    <div class="status" id="status">Loading audio engine...</div>
+    <div class="status" id="status">Awaiting initialization...</div>
 
     <div class="code-display" id="code-display">
-        <div class="code-display-header">Strudel Pattern Code</div>
-        <div id="code-content" class="code-comment">// Pattern code will appear here when playing</div>
+        <div class="code-display-header">Active Pattern</div>
+        <div id="code-content" class="code-comment">// Pattern code will appear when active</div>
     </div>
 </div>
 
@@ -377,62 +448,66 @@
 <script src="https://unpkg.com/@strudel/web@1.2.6"></script>
 
 <script>
-    // Mood color mappings
+    // Mood color mappings - industrial/cold palette
     const moodColors = {
-        calm: '#4ade80',
-        melancholic: '#8b5cf6',
-        dreamy: '#ec4899',
-        mysterious: '#6366f1',
-        uplifting: '#f59e0b',
-        contemplative: '#06b6d4'
+        metallic: '#4a9eff',
+        fractured: '#ff6b4a',
+        submerged: '#1a8f7d',
+        algorithmic: '#9b6bff',
+        crystalline: '#7dd3fc',
+        industrial: '#f97316'
     };
 
     // State
     let currentMood = null;
     let isPlaying = false;
     let strudelReady = false;
-    let options = {
-        melody: false,
-        noise: false,
-        harmonics: false,
-        rhythm: false
+    let evolutionInterval = null;
+    let evolutionState = {
+        filter: 0.3,
+        fm: 0.4,
+        density: 0.5,
+        space: 0.6
+    };
+    let cycleState = {
+        startTime: 0,
+        duration: 12000, // 12 seconds per cycle
+        count: 0
     };
 
     // DOM elements
     const moodButtons = document.querySelectorAll('.mood-btn');
     const playButton = document.getElementById('play-btn');
     const stopButton = document.getElementById('stop-btn');
-    const melodyToggle = document.getElementById('melody-toggle');
-    const noiseToggle = document.getElementById('noise-toggle');
-    const harmonicsToggle = document.getElementById('harmonics-toggle');
-    const rhythmToggle = document.getElementById('rhythm-toggle');
     const status = document.getElementById('status');
     const codeContent = document.getElementById('code-content');
+    const filterBar = document.getElementById('filter-bar');
+    const fmBar = document.getElementById('fm-bar');
+    const densityBar = document.getElementById('density-bar');
+    const spaceBar = document.getElementById('space-bar');
+    const cycleTimerFill = document.getElementById('cycle-timer-fill');
+    const cycleCount = document.getElementById('cycle-count');
 
     // Wait for Strudel to load and initialize
     async function initStrudelApp() {
         try {
-            // Wait a bit for the script to fully load
             await new Promise(resolve => setTimeout(resolve, 500));
 
-            // Check if initStrudel function is available
             if (typeof initStrudel === 'function') {
-                console.log('Initializing Strudel with drum samples...');
+                console.log('Initializing Strudel...');
                 await initStrudel({
-                    // Load drum machine samples during initialization
                     prebake: () => {
-                        console.log('Prebaking drum machine samples...');
+                        console.log('Loading drum samples...');
                         return samples('https://strudel.b-cdn.net/tidal-drum-machines.json');
                     }
-
                 });
-                console.log('Strudel initialized with drum samples');
+                console.log('Strudel initialized');
 
                 strudelReady = true;
-                status.textContent = 'Select a mood to begin';
+                status.textContent = 'Select mode to begin';
             } else {
-                console.error('initStrudel function not found. Available globals:', Object.keys(window).filter(k => k.toLowerCase().includes('strudel')));
-                status.textContent = 'Error: Strudel not loaded';
+                console.error('initStrudel not found');
+                status.textContent = 'Error: Engine not loaded';
             }
         } catch (error) {
             console.error('Error initializing Strudel:', error);
@@ -447,6 +522,56 @@
         initStrudelApp();
     }
 
+    // Update evolution bars
+    function updateEvolutionBars() {
+        filterBar.style.width = `${evolutionState.filter * 100}%`;
+        fmBar.style.width = `${evolutionState.fm * 100}%`;
+        densityBar.style.width = `${evolutionState.density * 100}%`;
+        spaceBar.style.width = `${evolutionState.space * 100}%`;
+    }
+
+    // Evolve state naturally
+    function evolveState() {
+        const time = Date.now() / 1000;
+        const now = Date.now();
+
+        // Use different sine wave periods for each parameter
+        evolutionState.filter = 0.3 + 0.5 * (0.5 + 0.5 * Math.sin(time * 0.05));
+        evolutionState.fm = 0.2 + 0.6 * (0.5 + 0.5 * Math.sin(time * 0.03 + 1));
+        evolutionState.density = 0.3 + 0.5 * (0.5 + 0.5 * Math.sin(time * 0.04 + 2));
+        evolutionState.space = 0.4 + 0.5 * (0.5 + 0.5 * Math.sin(time * 0.025 + 3));
+
+        updateEvolutionBars();
+
+        // Update cycle timer
+        const elapsed = now - cycleState.startTime;
+        const progress = Math.min(elapsed / cycleState.duration, 1);
+        cycleTimerFill.style.width = `${progress * 100}%`;
+
+        // Check if cycle completed
+        if (elapsed >= cycleState.duration) {
+            cycleState.count++;
+            cycleState.startTime = now;
+            cycleCount.textContent = `Cycle ${cycleState.count}`;
+
+            // Pulse animation on cycle complete
+            cycleTimerFill.classList.add('pulse');
+            setTimeout(() => cycleTimerFill.classList.remove('pulse'), 400);
+
+            // Randomize next cycle duration (8-16 seconds)
+            cycleState.duration = 8000 + Math.random() * 8000;
+        }
+    }
+
+    // Reset cycle timer
+    function resetCycleTimer() {
+        cycleState.startTime = Date.now();
+        cycleState.count = 0;
+        cycleState.duration = 12000;
+        cycleTimerFill.style.width = '0%';
+        cycleCount.textContent = 'Cycle 0';
+    }
+
     // Mood selection
     moodButtons.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -457,7 +582,7 @@
             btn.classList.add('active');
 
             document.documentElement.style.setProperty('--mood-color', moodColors[mood]);
-            status.textContent = `${mood.charAt(0).toUpperCase() + mood.slice(1)} mood selected`;
+            status.textContent = `${mood.toUpperCase()} mode selected`;
 
             if (isPlaying) {
                 playPattern();
@@ -465,45 +590,27 @@
         });
     });
 
-    // Toggle controls
-    melodyToggle.addEventListener('click', () => {
-        options.melody = !options.melody;
-        melodyToggle.classList.toggle('active');
-        if (isPlaying) playPattern();
-    });
-
-    noiseToggle.addEventListener('click', () => {
-        options.noise = !options.noise;
-        noiseToggle.classList.toggle('active');
-        if (isPlaying) playPattern();
-    });
-
-    harmonicsToggle.addEventListener('click', () => {
-        options.harmonics = !options.harmonics;
-        harmonicsToggle.classList.toggle('active');
-        if (isPlaying) playPattern();
-    });
-
-    rhythmToggle.addEventListener('click', () => {
-        options.rhythm = !options.rhythm;
-        rhythmToggle.classList.toggle('active');
-        if (isPlaying) playPattern();
-    });
-
     // Play/Stop controls
     playButton.addEventListener('click', () => {
         if (!strudelReady) {
-            status.textContent = 'Audio engine still loading...';
+            status.textContent = 'Engine initializing...';
             return;
         }
         if (!currentMood) {
-            status.textContent = 'Please select a mood first';
+            status.textContent = 'Select mode first';
             return;
         }
         isPlaying = true;
         playPattern();
-        status.textContent = 'Playing...';
+        status.textContent = `${currentMood.toUpperCase()} active`;
         status.classList.add('playing');
+
+        // Reset and start cycle timer
+        resetCycleTimer();
+
+        // Start evolution animation
+        if (evolutionInterval) clearInterval(evolutionInterval);
+        evolutionInterval = setInterval(evolveState, 100);
     });
 
     stopButton.addEventListener('click', () => {
@@ -511,9 +618,17 @@
         if (typeof hush === 'function') {
             hush();
         }
-        status.textContent = `${currentMood ? currentMood.charAt(0).toUpperCase() + currentMood.slice(1) + ' mood selected' : 'Stopped'}`;
+        if (evolutionInterval) {
+            clearInterval(evolutionInterval);
+            evolutionInterval = null;
+        }
+        // Reset timer display
+        cycleTimerFill.style.width = '0%';
+        cycleCount.textContent = 'Cycle 0';
+
+        status.textContent = currentMood ? `${currentMood.toUpperCase()} halted` : 'Halted';
         status.classList.remove('playing');
-        codeContent.innerHTML = '<div class="code-comment">// Pattern stopped</div>';
+        codeContent.innerHTML = '<div class="code-comment">// Pattern halted</div>';
     });
 
     function playPattern() {
@@ -521,151 +636,323 @@
 
         console.log('Playing mood:', currentMood);
 
-        // Stop any existing pattern
         if (typeof hush === 'function') {
             hush();
         }
 
-        // Array to collect code lines for display
         let codeLines = [];
 
         try {
-            // Build and play the pattern based on mood
             let pattern;
 
             switch(currentMood) {
-                case 'calm':
-                    codeLines.push('// Base ambient layer');
-                    codeLines.push('note("<c3 g3 e3 a3>")');
-                    codeLines.push('  .s("sawtooth").lpf(400)');
-                    codeLines.push('  .gain(0.3).room(0.8).slow(4)');
-                    pattern = note("<c3 g3 e3 a3>").s("sawtooth").lpf(400).gain(0.3).room(0.8).slow(4);
-                    if (options.harmonics) {
-                        codeLines.push('  .add(note("7"))');
-                        pattern = pattern.add(note("7"));
-                    }
-                    if (options.melody) {
-                        codeLines.push('  .stack(note("<e4 g4 c5 b4>").s("triangle").gain(0.2).delay(0.3).room(0.5).slow(3))');
-                        pattern = pattern.stack(note("<e4 g4 c5 b4>").s("triangle").gain(0.2).delay(0.3).room(0.5).slow(3));
-                    }
-                    if (options.rhythm) {
-                        codeLines.push('  .stack(s("bd, ~ hh ~").bank("RolandTR808").gain(0.6).slow(2))');
-                        pattern = pattern.stack(s("bd, ~ hh ~").bank("RolandTR808").gain(0.6).slow(2));
-                    }
+                case 'metallic':
+                    // Cold FM textures with machine pulse
+                    codeLines = [
+                        '// METALLIC - Cold FM textures',
+                        'stack(',
+                        '  s("bd(3,8)").bank("RolandTR909")',
+                        '    .gain(0.6).room(0.4).lpf(800),',
+                        '  s("hh(11,16)").bank("RolandTR808")',
+                        '    .n(irand(4)).gain(0.35).room(0.7)',
+                        '    .delay(0.3).pan(rand.range(0.3,0.7)).hpf(3000),',
+                        '  note("<c2 eb2 f2 ab2>/4").s("sawtooth")',
+                        '    .fm(perlin.range(2,5).slow(8))',
+                        '    .fmh(sine.range(0.5,2).slow(6))',
+                        '    .lpf(perlin.range(300,600).slow(4))',
+                        '    .lpq(8).gain(0.5).room(0.3),',
+                        '  note("<c5 ~ eb5 ~ ~ f5 ~ ~>/2").s("square")',
+                        '    .lpf(2000).gain(0.2).room(0.8)',
+                        '    .delay(0.5).pan(rand)',
+                        ')'
+                    ];
+                    pattern = stack(
+                        s("bd(3,8)").bank("RolandTR909")
+                            .gain(0.6).room(0.4).lpf(800),
+                        s("hh(11,16)").bank("RolandTR808")
+                            .n(irand(4)).gain(0.35).room(0.7)
+                            .delay(0.3).pan(rand.range(0.3, 0.7)).hpf(3000),
+                        s("~ sd(3,8,<0 2 1>)").bank("RolandTR909")
+                            .gain(0.5).room(0.6),
+                        note("<c2 eb2 f2 ab2>/4")
+                            .s("sawtooth")
+                            .fm(perlin.range(2, 5).slow(8))
+                            .fmh(sine.range(0.5, 2).slow(6))
+                            .lpf(perlin.range(300, 600).slow(4))
+                            .lpq(8)
+                            .gain(0.5)
+                            .room(0.3),
+                        note("<c5 ~ eb5 ~ ~ f5 ~ ~>/2")
+                            .s("square")
+                            .lpf(2000)
+                            .gain(0.2)
+                            .room(0.8)
+                            .delay(0.5)
+                            .pan(rand)
+                    );
                     break;
 
-                case 'melancholic':
-                    codeLines.push('// Base ambient layer');
-                    codeLines.push('note("<d3 f3 a3 c4>")');
-                    codeLines.push('  .s("sawtooth").lpf(200)');
-                    codeLines.push('  .gain(0.35).room(0.9).slow(6)');
-                    pattern = note("<d3 f3 a3 c4>").s("sawtooth").lpf(200).gain(0.35).room(0.9).slow(6);
-                    if (options.harmonics) {
-                        codeLines.push('  .add(note("5"))');
-                        pattern = pattern.add(note("5"));
-                    }
-                    if (options.melody) {
-                        codeLines.push('  .stack(note("<f4 a4 d5 c5>").s("sine").gain(0.25).delay(0.4).room(0.7).slow(4))');
-                        pattern = pattern.stack(note("<f4 a4 d5 c5>").s("sine").gain(0.25).delay(0.4).room(0.7).slow(4));
-                    }
-                    if (options.rhythm) {
-                        codeLines.push('  .stack(s("bd ~ ~ ~, ~ ~ sd ~").bank("RolandTR808").gain(0.55).slow(3))');
-                        pattern = pattern.stack(s("bd ~ ~ ~, ~ ~ sd ~").bank("RolandTR808").gain(0.55).slow(3));
-                    }
+                case 'fractured':
+                    // Granular glitch, bit-crushed textures
+                    codeLines = [
+                        '// FRACTURED - Granular glitch',
+                        'stack(',
+                        '  s("bd ~ bd:1 ~").bank("RolandTR909")',
+                        '    .gain(0.65).room(0.4).lpf(600),',
+                        '  s("hh*<8 12 16 6>").bank("RolandTR808")',
+                        '    .n(irand(4)).gain(rand.range(0.2,0.45))',
+                        '    .room(0.8).delay(0.5).hpf(4000).pan(rand),',
+                        '  note("<c4 eb4 f4 ab4>*4").s("triangle")',
+                        '    .chop("<2 4 8 4>").coarse("<8 16 32 16>")',
+                        '    .lpf(perlin.range(1000,2000).slow(4))',
+                        '    .gain(0.25).room(1.0).delay(0.6).pan(rand),',
+                        '  note("<c2 f2>/4").s("square").fm(2)',
+                        '    .lpf(350).lpq(20).gain(0.4).room(0.5)',
+                        ')'
+                    ];
+                    pattern = stack(
+                        s("bd ~ bd:1 ~").bank("RolandTR909")
+                            .gain(0.65).room(0.4).lpf(600),
+                        s("hh*<8 12 16 6>").bank("RolandTR808")
+                            .n(irand(4)).gain(rand.range(0.2, 0.45))
+                            .room(0.8).delay(0.5).hpf(4000).pan(rand),
+                        s("~ [sd cp] ~ <sd rim>").bank("RolandTR909")
+                            .gain(0.5).room(0.7),
+                        note("<c4 eb4 f4 ab4>*4")
+                            .s("triangle")
+                            .chop("<2 4 8 4>")
+                            .coarse("<8 16 32 16>")
+                            .lpf(perlin.range(1000, 2000).slow(4))
+                            .gain(0.25)
+                            .room(1.0)
+                            .delay(0.6)
+                            .pan(rand),
+                        note("<c2 f2>/4")
+                            .s("square")
+                            .fm(2)
+                            .lpf(350)
+                            .lpq(20)
+                            .gain(0.4)
+                            .room(0.5)
+                    );
                     break;
 
-                case 'dreamy':
-                    codeLines.push('// Base ambient layer');
-                    codeLines.push('note("<a3 c4 e4 g4>")');
-                    codeLines.push('  .s("triangle").lpf(500)');
-                    codeLines.push('  .gain(0.3).room(0.95).delay(0.5).slow(5)');
-                    pattern = note("<a3 c4 e4 g4>").s("triangle").lpf(500).gain(0.3).room(0.95).delay(0.5).slow(5);
-                    if (options.harmonics) {
-                        codeLines.push('  .add(note("12"))');
-                        pattern = pattern.add(note("12"));
-                    }
-                    if (options.melody) {
-                        codeLines.push('  .stack(note("<c5 e5 g5 a5>").s("sine").gain(0.2).delay(0.6).room(0.8).slow(3.5))');
-                        pattern = pattern.stack(note("<c5 e5 g5 a5>").s("sine").gain(0.2).delay(0.6).room(0.8).slow(3.5));
-                    }
-                    if (options.rhythm) {
-                        codeLines.push('  .stack(s("~ hh ~, bd ~ ~").bank("RolandTR808").gain(0.5).room(0.5).slow(2.5))');
-                        pattern = pattern.stack(s("~ hh ~, bd ~ ~").bank("RolandTR808").gain(0.5).room(0.5).slow(2.5));
-                    }
+                case 'submerged':
+                    // Deep sub bass with filtered darkness
+                    codeLines = [
+                        '// SUBMERGED - Deep filtered darkness',
+                        'stack(',
+                        '  s("bd(5,8)").bank("RolandTR909")',
+                        '    .gain(0.7).room(0.3).lpf(700).distort(0.2),',
+                        '  s("hh(13,16)").bank("RolandTR808")',
+                        '    .n(irand(3)).gain(0.3).room(0.6).hpf(3500),',
+                        '  note("<c1 ~ eb1 ~ f1 ~ ab1 ~>/2").s("sine")',
+                        '    .gain(0.7).lpf(120).room(0.2),',
+                        '  note("<c2 ~ f2 ~ ab2 ~>/2").s("sawtooth")',
+                        '    .fm(4).fmh(2)',
+                        '    .lpf(perlin.range(200,500).slow(8))',
+                        '    .lpq(15).gain(0.5).room(0.4).distort(0.15),',
+                        '  note("<[c3,eb3,g3]>/8").s("sawtooth")',
+                        '    .lpf(sine.range(300,700).slow(16))',
+                        '    .gain(0.25).room(1.5).attack(2).release(3)',
+                        ').slow(1.5)'
+                    ];
+                    pattern = stack(
+                        s("bd(5,8)").bank("RolandTR909")
+                            .gain(0.7).room(0.3).lpf(700).distort(0.2),
+                        s("hh(13,16)").bank("RolandTR808")
+                            .n(irand(3)).gain(0.3).room(0.6).hpf(3500),
+                        s("oh(5,8,<0 1 2>)").bank("RolandTR909")
+                            .gain(0.25).room(1.0).delay(0.6),
+                        note("<c1 ~ eb1 ~ f1 ~ ab1 ~>/2")
+                            .s("sine")
+                            .gain(0.7)
+                            .lpf(120)
+                            .room(0.2),
+                        note("<c2 ~ f2 ~ ab2 ~>/2")
+                            .s("sawtooth")
+                            .fm(4)
+                            .fmh(2)
+                            .lpf(perlin.range(200, 500).slow(8))
+                            .lpq(15)
+                            .gain(0.5)
+                            .room(0.4)
+                            .distort(0.15),
+                        note("<[c3,eb3,g3] [bb2,db3,f3] [ab2,c3,eb3]>/8")
+                            .s("sawtooth")
+                            .lpf(sine.range(300, 700).slow(16))
+                            .lpq(10)
+                            .gain(0.25)
+                            .room(1.5)
+                            .attack(2)
+                            .release(3)
+                    ).slow(1.5);
                     break;
 
-                case 'mysterious':
-                    codeLines.push('// Base ambient layer');
-                    codeLines.push('note("<e3 g3 b3 d4>")');
-                    codeLines.push('  .s("sawtooth").lpf(300)');
-                    codeLines.push('  .gain(0.32).room(0.85).slow(7)');
-                    pattern = note("<e3 g3 b3 d4>").s("sawtooth").lpf(300).gain(0.32).room(0.85).slow(7);
-                    if (options.harmonics) {
-                        codeLines.push('  .add(note("3"))');
-                        pattern = pattern.add(note("3"));
-                    }
-                    if (options.melody) {
-                        codeLines.push('  .stack(note("<g4 b4 e5 d5>").s("triangle").gain(0.18).delay(0.5).room(0.75).slow(5))');
-                        pattern = pattern.stack(note("<g4 b4 e5 d5>").s("triangle").gain(0.18).delay(0.5).room(0.75).slow(5));
-                    }
-                    if (options.rhythm) {
-                        codeLines.push('  .stack(s("bd ~ ~ ~, ~ hh ~ ~").bank("RolandTR808").gain(0.52).room(0.6).slow(3.5))');
-                        pattern = pattern.stack(s("bd ~ ~ ~, ~ hh ~ ~").bank("RolandTR808").gain(0.52).room(0.6).slow(3.5));
-                    }
+                case 'algorithmic':
+                    // Polyrhythmic complexity with euclidean patterns
+                    codeLines = [
+                        '// ALGORITHMIC - Polyrhythmic complexity',
+                        'stack(',
+                        '  s("bd(<3 5 2 4>,<8 7 9 11>)").bank("RolandTR909")',
+                        '    .gain(0.6).room(0.4).lpf("<700 900 600>"),',
+                        '  s("hh(<13 17 11>,<16 16 16>)").bank("RolandTR808")',
+                        '    .n(irand(4)).gain(rand.range(0.25,0.4))',
+                        '    .room(perlin.range(0.5,0.9).slow(8))',
+                        '    .delay(perlin.range(0.3,0.6).slow(4))',
+                        '    .hpf(rand.range(3000,5000)).pan(rand),',
+                        '  s("sd(<3 4 5>,<8 9 7>,<0 1 2 3>)").bank("RolandTR909")',
+                        '    .gain(0.5).room(0.6),',
+                        '  note("c4 eb4 g4 bb4 d5 bb4 g4 eb4".fast("<1 1.5 2>"))',
+                        '    .s("square").lpf(perlin.range(1000,2500).slow(4))',
+                        '    .gain(0.2).room(0.8).delay(0.5),',
+                        '  note("<c1 f1>/8").s("sine").fm(0.5)',
+                        '    .gain(0.45).lpf(200).room(0.8)',
+                        ')'
+                    ];
+                    pattern = stack(
+                        s("bd(<3 5 2 4>,<8 7 9 11>)").bank("RolandTR909")
+                            .gain(0.6).room(0.4).lpf("<700 900 600>"),
+                        s("hh(<13 17 11>,<16 16 16>)").bank("RolandTR808")
+                            .n(irand(4)).gain(rand.range(0.25, 0.4))
+                            .room(perlin.range(0.5, 0.9).slow(8))
+                            .delay(perlin.range(0.3, 0.6).slow(4))
+                            .hpf(rand.range(3000, 5000)).pan(rand),
+                        s("sd(<3 4 5>,<8 9 7>,<0 1 2 3>)").bank("RolandTR909")
+                            .gain(0.5).room(0.6),
+                        note("c4 eb4 g4 bb4 d5 bb4 g4 eb4".fast("<1 1.5 2>"))
+                            .s("square")
+                            .lpf(perlin.range(1000, 2500).slow(4))
+                            .gain(0.2)
+                            .room(0.8)
+                            .delay(0.5),
+                        note("<c1 f1>/8")
+                            .s("sine")
+                            .fm(0.5)
+                            .gain(0.45)
+                            .lpf(200)
+                            .room(0.8)
+                    );
                     break;
 
-                case 'uplifting':
-                    codeLines.push('// Base ambient layer');
-                    codeLines.push('note("<g3 b3 d4 f#4>")');
-                    codeLines.push('  .s("triangle").lpf(700)');
-                    codeLines.push('  .gain(0.35).room(0.7).slow(4)');
-                    pattern = note("<g3 b3 d4 f#4>").s("triangle").lpf(700).gain(0.35).room(0.7).slow(4);
-                    if (options.harmonics) {
-                        codeLines.push('  .add(note("12"))');
-                        pattern = pattern.add(note("12"));
-                    }
-                    if (options.melody) {
-                        codeLines.push('  .stack(note("<b4 d5 g5 f#5>").s("sine").gain(0.25).delay(0.25).room(0.6).slow(2.5))');
-                        pattern = pattern.stack(note("<b4 d5 g5 f#5>").s("sine").gain(0.25).delay(0.25).room(0.6).slow(2.5));
-                    }
-                    if (options.rhythm) {
-                        codeLines.push('  .stack(s("bd hh sd hh, ~ ~ cp ~").bank("RolandTR808").gain(0.65).room(0.4).slow(2))');
-                        pattern = pattern.stack(s("bd hh sd hh, ~ ~ cp ~").bank("RolandTR808").gain(0.65).room(0.4).slow(2));
-                    }
+                case 'crystalline':
+                    // FM bells, sparse and ethereal
+                    codeLines = [
+                        '// CRYSTALLINE - FM bells, ethereal',
+                        'stack(',
+                        '  s("bd*3").bank("RolandTR909")',
+                        '    .gain(0.6).room(0.4).lpf(700).slow(2),',
+                        '  s("hh*13").bank("RolandTR808")',
+                        '    .n(irand(4)).gain(rand.range(0.25,0.35))',
+                        '    .room(0.7).delay(0.3).hpf(3500).slow(2),',
+                        '  note("<c5 ~ eb5 ~ g5 ~ bb5 ~ c6 ~>/2").s("sine")',
+                        '    .fm(sine.range(4,12).slow(12))',
+                        '    .fmh(perlin.range(2,6).slow(8))',
+                        '    .lpf(4000).gain(0.22).room(1.5)',
+                        '    .delay(0.7).delaytime("<0.25 0.375 0.5>").pan(rand),',
+                        '  note("~ c5 ~ ~ ~ eb5 ~ ~ ~ ~ g5 ~ ~ ~ bb5 ~")',
+                        '    .s("sine").lpf(3000).gain(0.25)',
+                        '    .room(1.2).delay(0.7).delayfeedback(0.8),',
+                        '  note("<[c3,e3,g3] [bb2,d3,f3]>/8").s("sawtooth")',
+                        '    .chop(16).lpf(900).gain(0.18).room(1.3)',
+                        ')'
+                    ];
+                    pattern = stack(
+                        s("bd*3").bank("RolandTR909")
+                            .gain(0.6).room(0.4).lpf(700).slow(2),
+                        s("hh*13").bank("RolandTR808")
+                            .n(irand(4)).gain(rand.range(0.25, 0.35))
+                            .room(0.7).delay(0.3).hpf(3500).slow(2),
+                        s("sd*5").bank("RolandTR909")
+                            .gain(0.45).room(0.6).slow(2),
+                        note("<c5 ~ eb5 ~ g5 ~ bb5 ~ c6 ~>/2")
+                            .s("sine")
+                            .fm(sine.range(4, 12).slow(12))
+                            .fmh(perlin.range(2, 6).slow(8))
+                            .lpf(4000)
+                            .gain(0.22)
+                            .room(1.5)
+                            .delay(0.7)
+                            .delaytime("<0.25 0.375 0.5>")
+                            .pan(rand),
+                        note("~ c5 ~ ~ ~ eb5 ~ ~ ~ ~ g5 ~ ~ ~ bb5 ~")
+                            .s("sine")
+                            .lpf(3000)
+                            .gain(0.25)
+                            .room(1.2)
+                            .delay(0.7)
+                            .delayfeedback(0.8),
+                        note("<[c3,e3,g3] [bb2,d3,f3]>/8")
+                            .s("sawtooth")
+                            .chop(16)
+                            .lpf(900)
+                            .gain(0.18)
+                            .room(1.3)
+                    );
                     break;
 
-                case 'contemplative':
-                    codeLines.push('// Base ambient layer');
-                    codeLines.push('note("<f3 a3 c4 e4>")');
-                    codeLines.push('  .s("sawtooth").lpf(450)');
-                    codeLines.push('  .gain(0.33).room(0.88).slow(6)');
-                    pattern = note("<f3 a3 c4 e4>").s("sawtooth").lpf(450).gain(0.33).room(0.88).slow(6);
-                    if (options.harmonics) {
-                        codeLines.push('  .add(note("7"))');
-                        pattern = pattern.add(note("7"));
-                    }
-                    if (options.melody) {
-                        codeLines.push('  .stack(note("<a4 c5 f5 e5>").s("triangle").gain(0.22).delay(0.35).room(0.65).slow(4.5))');
-                        pattern = pattern.stack(note("<a4 c5 f5 e5>").s("triangle").gain(0.22).delay(0.35).room(0.65).slow(4.5));
-                    }
-                    if (options.rhythm) {
-                        codeLines.push('  .stack(s("bd ~ ~ ~, ~ hh sd ~").bank("RolandTR808").gain(0.58).room(0.5).slow(2.5))');
-                        pattern = pattern.stack(s("bd ~ ~ ~, ~ hh sd ~").bank("RolandTR808").gain(0.58).room(0.5).slow(2.5));
-                    }
+                case 'industrial':
+                    // Resonant, mechanical, raw
+                    codeLines = [
+                        '// INDUSTRIAL - Resonant mechanical',
+                        'stack(',
+                        '  s("bd(<3 5>,<8 9>)").bank("RolandTR909")',
+                        '    .gain(0.7).room(0.4).lpf(700)',
+                        '    .sometimes(x => x.distort(0.3)),',
+                        '  s("hh(<11 13>,16)").bank("RolandTR808")',
+                        '    .n(irand(4)).gain(rand.range(0.3,0.45))',
+                        '    .room(0.7).delay(0.4).hpf(3800)',
+                        '    .sometimes(x => x.chop(2)),',
+                        '  note("<c2 eb2 f2 ab2 bb2>/2").s("sawtooth")',
+                        '    .fm(perlin.range(2,8).slow(8))',
+                        '    .fmh(sine.range(1,4).slow(6))',
+                        '    .lpf(perlin.range(300,800).slow(4))',
+                        '    .lpq(18).gain(0.55).room(0.5).distort(0.2),',
+                        '  note("<c4 db4 e4 f4 ab4 bb4>*2".add(irand(7)))',
+                        '    .s("square").lpf(perlin.range(800,2000).slow(4))',
+                        '    .lpq(6).gain(0.3).room(0.8).delay(0.5)',
+                        ')'
+                    ];
+                    pattern = stack(
+                        s("bd(<3 5>,<8 9>)").bank("RolandTR909")
+                            .gain(0.7).room(0.4).lpf(700)
+                            .sometimes(x => x.distort(0.3)),
+                        s("hh(<11 13>,16)").bank("RolandTR808")
+                            .n(irand(4)).gain(rand.range(0.3, 0.45))
+                            .room(0.7).delay(0.4).hpf(3800)
+                            .sometimes(x => x.chop(2))
+                            .rarely(x => x.fast(2)),
+                        s("sd(<3 4>,<8 7>,<0 2>)").bank("RolandTR909")
+                            .gain(0.55).room(0.6),
+                        note("<c2 eb2 f2 ab2 bb2>/2")
+                            .s("sawtooth")
+                            .fm(perlin.range(2, 8).slow(8))
+                            .fmh(sine.range(1, 4).slow(6))
+                            .lpf(perlin.range(300, 800).slow(4))
+                            .lpq(18)
+                            .gain(0.55)
+                            .room(0.5)
+                            .distort(0.2),
+                        note("<c4 db4 e4 f4 ab4 bb4>*2".add(irand(7)))
+                            .s("square")
+                            .lpf(perlin.range(800, 2000).slow(4))
+                            .lpq(6)
+                            .gain(0.3)
+                            .room(0.8)
+                            .delay(0.5),
+                        note("<[c2,e2,g2] [db2,f2,ab2]>/16")
+                            .s("sawtooth")
+                            .lpf(400)
+                            .gain(0.3)
+                            .room(1.5)
+                            .attack(3)
+                            .release(4)
+                    );
                     break;
             }
-
-            // Add noise layer if enabled
-            if (options.noise && pattern) {
-                codeLines.push('  .stack(note("c2").s("sawtooth").gain(0.08).lpf(1500).room(0.5).slow(16))');
-                pattern = pattern.stack(note("c2").s("sawtooth").gain(0.08).lpf(1500).room(0.5).slow(16));
-            }
-
-            // Add play command to display
-            codeLines.push('  .play()');
 
             // Update code display
-            codeContent.innerHTML = codeLines.map((line, index) => {
+            codeContent.innerHTML = codeLines.map((line) => {
                 if (line.startsWith('//')) {
                     return `<div class="code-comment">${line}</div>`;
                 } else {
@@ -679,7 +966,7 @@
                 console.log('Pattern started');
             } else {
                 console.error('Could not play pattern');
-                status.textContent = 'Error: Could not play pattern';
+                status.textContent = 'Error: Pattern failed';
             }
 
         } catch (error) {
