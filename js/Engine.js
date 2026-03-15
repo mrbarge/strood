@@ -12,7 +12,8 @@ Strood.Engine = class Engine {
      */
     async init() {
         try {
-            await new Promise(resolve => setTimeout(resolve, 500));
+            // Wait for Strudel script to fully initialize
+            await new Promise(resolve => setTimeout(resolve, Strood.Config.engineInitDelay));
 
             if (typeof initStrudel === 'function') {
                 console.log('Initializing Strudel...');

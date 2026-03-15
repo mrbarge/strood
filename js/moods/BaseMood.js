@@ -23,7 +23,7 @@ Strood.Moods.Base = class BaseMood {
         // Get values based on mood family
         if (this.constructor.family === 'major') {
             return {
-                // G major / dreamy pools
+                // G major / dreamy pools (use modulo for bounds safety)
                 chordNotes: pools.gMajor.chords[v.chords % pools.gMajor.chords.length],
                 arpNotes: pools.gMajor.arpeggios[v.arpeggios % pools.gMajor.arpeggios.length],
                 melodyNotes: pools.gMajor.melodies[v.highNotes % pools.gMajor.melodies.length],
@@ -33,26 +33,26 @@ Strood.Moods.Base = class BaseMood {
                 // Timing
                 slowArpSpeed: pools.timing.slowArpSpeeds[v.arpSpeed % pools.timing.slowArpSpeeds.length],
                 // Ranges
-                fmRange: pools.ranges.fm[v.fmRange],
-                filterRange: pools.ranges.filter[v.filterRange]
+                fmRange: pools.ranges.fm[v.fmRange % pools.ranges.fm.length],
+                filterRange: pools.ranges.filter[v.filterRange % pools.ranges.filter.length]
             };
         } else {
             return {
-                // C minor / IDM pools
-                bassNotes: pools.cMinor.bassNotes[v.bassNotes],
-                subNotes: pools.cMinor.subNotes[v.subNotes],
-                highNotes: pools.cMinor.highNotes[v.highNotes],
-                chordNotes: pools.cMinor.chords[v.chords],
-                arpNotes: pools.cMinor.arpeggios[v.arpeggios],
+                // C minor / IDM pools (use modulo for bounds safety)
+                bassNotes: pools.cMinor.bassNotes[v.bassNotes % pools.cMinor.bassNotes.length],
+                subNotes: pools.cMinor.subNotes[v.subNotes % pools.cMinor.subNotes.length],
+                highNotes: pools.cMinor.highNotes[v.highNotes % pools.cMinor.highNotes.length],
+                chordNotes: pools.cMinor.chords[v.chords % pools.cMinor.chords.length],
+                arpNotes: pools.cMinor.arpeggios[v.arpeggios % pools.cMinor.arpeggios.length],
                 // Drum patterns
-                kickPattern: pools.drums.kick[v.kickPattern],
-                hatPattern: pools.drums.hat[v.hatPattern],
-                snarePattern: pools.drums.snare[v.snarePattern],
+                kickPattern: pools.drums.kick[v.kickPattern % pools.drums.kick.length],
+                hatPattern: pools.drums.hat[v.hatPattern % pools.drums.hat.length],
+                snarePattern: pools.drums.snare[v.snarePattern % pools.drums.snare.length],
                 // Timing
-                arpSpeed: pools.timing.arpSpeeds[v.arpSpeed],
+                arpSpeed: pools.timing.arpSpeeds[v.arpSpeed % pools.timing.arpSpeeds.length],
                 // Ranges
-                fmRange: pools.ranges.fm[v.fmRange],
-                filterRange: pools.ranges.filter[v.filterRange]
+                fmRange: pools.ranges.fm[v.fmRange % pools.ranges.fm.length],
+                filterRange: pools.ranges.filter[v.filterRange % pools.ranges.filter.length]
             };
         }
     }

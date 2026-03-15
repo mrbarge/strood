@@ -21,6 +21,30 @@ Strood.UI = class UI {
             cycleCount: document.getElementById('cycle-count'),
             cycleTimerLabel: document.querySelector('.cycle-timer-label')
         };
+
+        // Validate required DOM elements exist
+        this.validateElements();
+    }
+
+    /**
+     * Validate that all required DOM elements exist
+     */
+    validateElements() {
+        const required = [
+            'playButton', 'stopButton', 'status', 'codeContent',
+            'filterBar', 'fmBar', 'densityBar', 'spaceBar',
+            'cycleTimerFill', 'cycleCount', 'cycleTimerLabel'
+        ];
+
+        const missing = required.filter(key => !this.elements[key]);
+
+        if (missing.length > 0) {
+            console.error('Strood UI: Missing required DOM elements:', missing);
+        }
+
+        if (this.elements.moodButtons.length === 0) {
+            console.error('Strood UI: No mood buttons found');
+        }
     }
 
     /**
@@ -108,14 +132,24 @@ Strood.UI = class UI {
     }
 
     /**
+     * Escape HTML entities to prevent XSS
+     */
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    /**
      * Update code display with pattern lines
      */
     updateCodeDisplay(lines) {
         this.elements.codeContent.innerHTML = lines.map(line => {
+            const escaped = this.escapeHtml(line);
             if (line.startsWith('//')) {
-                return `<div class="code-comment">${line}</div>`;
+                return `<div class="code-comment">${escaped}</div>`;
             } else {
-                return `<div class="code-line">${line}</div>`;
+                return `<div class="code-line">${escaped}</div>`;
             }
         }).join('');
     }

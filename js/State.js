@@ -7,6 +7,9 @@ Strood.State = class State {
         // Current mood name
         this.currentMood = null;
 
+        // Current mood family ('minor' or 'major')
+        this.currentFamily = 'minor';
+
         // Playback state
         this.isPlaying = false;
 
@@ -50,8 +53,9 @@ Strood.State = class State {
     /**
      * Set the current mood
      */
-    setMood(mood) {
+    setMood(mood, family = 'minor') {
         this.currentMood = mood;
+        this.currentFamily = family;
     }
 
     /**
@@ -141,11 +145,12 @@ Strood.State = class State {
      */
     updateEvolution() {
         const time = Date.now() / 1000;
+        const sw = Strood.Config.sineWave;
 
         // Use different sine wave periods for each parameter
-        this.evolution.filter = 0.3 + 0.5 * (0.5 + 0.5 * Math.sin(time * 0.05));
-        this.evolution.fm = 0.2 + 0.6 * (0.5 + 0.5 * Math.sin(time * 0.03 + 1));
-        this.evolution.density = 0.3 + 0.5 * (0.5 + 0.5 * Math.sin(time * 0.04 + 2));
-        this.evolution.space = 0.4 + 0.5 * (0.5 + 0.5 * Math.sin(time * 0.025 + 3));
+        this.evolution.filter = sw.filter.base + sw.filter.amplitude * (0.5 + 0.5 * Math.sin(time * sw.filter.frequency + sw.filter.phase));
+        this.evolution.fm = sw.fm.base + sw.fm.amplitude * (0.5 + 0.5 * Math.sin(time * sw.fm.frequency + sw.fm.phase));
+        this.evolution.density = sw.density.base + sw.density.amplitude * (0.5 + 0.5 * Math.sin(time * sw.density.frequency + sw.density.phase));
+        this.evolution.space = sw.space.base + sw.space.amplitude * (0.5 + 0.5 * Math.sin(time * sw.space.frequency + sw.space.phase));
     }
 };

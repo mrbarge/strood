@@ -46,7 +46,7 @@ Strood.App = class App {
             return;
         }
 
-        this.state.setMood(moodName);
+        this.state.setMood(moodName, MoodClass.family);
         this.currentMoodInstance = new MoodClass(this.state);
 
         // Update UI
