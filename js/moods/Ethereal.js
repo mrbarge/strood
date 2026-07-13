@@ -12,7 +12,7 @@ Strood.Moods.Ethereal = class Ethereal extends Strood.Moods.Base {
         const v = this.getVariation();
 
         return stack(
-            note(v.chordNotes + "/4")
+            note("[" + v.chordNotes + "]/4")
                 .s("sawtooth")
                 .lpf(sine.range(v.filterRange[0] + 400, v.filterRange[1] + 800).slow(20))
                 .gain(0.35)
@@ -44,7 +44,7 @@ Strood.Moods.Ethereal = class Ethereal extends Strood.Moods.Base {
             '// ETHEREAL - Dreamy floating',
             this.getCycleInfo(subtle),
             'stack(',
-            `  note("${v.chordNotes}/4").s("sawtooth")`,
+            `  note("[${v.chordNotes}]/4").s("sawtooth")`,
             `    .lpf(sine.range(${v.filterRange[0] + 400},${v.filterRange[1] + 800}).slow(20))`,
             '    .gain(0.35).room(2).attack(3).release(5),',
             `  note("${v.arpNotes}").slow(${v.slowArpSpeed}).s("triangle")`,

@@ -27,7 +27,7 @@ Strood.Moods.Algorithmic = class Algorithmic extends Strood.Moods.Base {
                 .gain(0.2)
                 .room(0.8)
                 .delay(0.5),
-            note(v.subNotes + "/4")
+            note("[" + v.subNotes + "]/4")
                 .s("sine")
                 .fm(0.5)
                 .gain(0.45)
@@ -55,7 +55,7 @@ Strood.Moods.Algorithmic = class Algorithmic extends Strood.Moods.Base {
             `  note("${v.arpNotes}".fast("${v.arpSpeed}"))`,
             `    .s("square").lpf(perlin.range(${v.filterRange[0]},${v.filterRange[1]}).slow(4))`,
             '    .gain(0.2).room(0.8).delay(0.5),',
-            `  note("${v.subNotes}/4").s("sine").fm(0.5)`,
+            `  note("[${v.subNotes}]/4").s("sine").fm(0.5)`,
             '    .gain(0.45).lpf(200).room(0.8)',
             ')'
         ];

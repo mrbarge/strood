@@ -12,7 +12,7 @@ Strood.Moods.Drift = class Drift extends Strood.Moods.Base {
         const v = this.getVariation();
 
         return stack(
-            note(v.chordNotes + "/16")
+            note("[" + v.chordNotes + "]/16")
                 .s("sawtooth")
                 .lpf(sine.range(v.filterRange[0], v.filterRange[1] + 400).slow(32))
                 .gain(0.4)
@@ -47,7 +47,7 @@ Strood.Moods.Drift = class Drift extends Strood.Moods.Base {
             '// DRIFT - Slow ambient wash',
             this.getCycleInfo(subtle),
             'stack(',
-            `  note("${v.chordNotes}/16").s("sawtooth")`,
+            `  note("[${v.chordNotes}]/16").s("sawtooth")`,
             `    .lpf(sine.range(${v.filterRange[0]},${v.filterRange[1] + 400}).slow(32))`,
             '    .gain(0.4).room(2.5).attack(4).release(8),',
             `  note("${v.melodyNotes}").slow(2).s("sine")`,

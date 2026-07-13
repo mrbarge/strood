@@ -19,7 +19,7 @@ Strood.Moods.Nostalgia = class Nostalgia extends Strood.Moods.Base {
                 .room(1.2)
                 .delay(0.5)
                 .delaytime("<0.25 0.375>"),
-            note(v.chordNotes + "/8")
+            note("[" + v.chordNotes + "]/8")
                 .s("triangle")
                 .lpf(1200)
                 .gain(0.3)
@@ -50,7 +50,7 @@ Strood.Moods.Nostalgia = class Nostalgia extends Strood.Moods.Base {
             `  note("${v.arpNotes}").slow(${v.slowArpSpeed}).s("square")`,
             `    .lpf(perlin.range(${v.filterRange[0] + 800},${v.filterRange[1] + 1200}).slow(12))`,
             '    .gain(0.22).room(1.2).delay(0.5).delaytime("<0.25 0.375>"),',
-            `  note("${v.chordNotes}/8").s("triangle")`,
+            `  note("[${v.chordNotes}]/8").s("triangle")`,
             '    .lpf(1200).gain(0.3).room(1.8)',
             '    .attack(2).release(4),',
             `  note("${v.melodyNotes}").s("sine")`,

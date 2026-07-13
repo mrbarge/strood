@@ -28,7 +28,7 @@ Strood.Moods.Fractured = class Fractured extends Strood.Moods.Base {
                 .room(1.0)
                 .delay(0.6)
                 .pan(rand),
-            note(v.bassNotes + "/4")
+            note("[" + v.bassNotes + "]/4")
                 .s("square")
                 .fm(2)
                 .lpf(350)
@@ -54,7 +54,7 @@ Strood.Moods.Fractured = class Fractured extends Strood.Moods.Base {
             '    .chop("<2 4 8 4>").coarse("<8 16 32 16>")',
             `    .lpf(perlin.range(${v.filterRange[0]},${v.filterRange[1]}).slow(4))`,
             '    .gain(0.25).room(1.0).delay(0.6).pan(rand),',
-            `  note("${v.bassNotes}/4").s("square").fm(2)`,
+            `  note("[${v.bassNotes}]/4").s("square").fm(2)`,
             '    .lpf(350).lpq(20).gain(0.4).room(0.5)',
             ')'
         ];

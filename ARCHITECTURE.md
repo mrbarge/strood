@@ -61,6 +61,10 @@ Each mood generates patterns through a switch statement in `playPattern(subtle)`
 
 Pattern generation uses **evolution pools** - arrays of harmonically/rhythmically compatible sequences that can be indexed into for variation.
 
+> **Gotcha:** spread sequences must be wrapped as `[seq]/N` (not `seq + "/N"`),
+> otherwise `/N` slows only the last token. See
+> [docs/pattern-density-and-silence.md](docs/pattern-density-and-silence.md).
+
 ### Evolution System
 
 The evolution system operates on two levels:

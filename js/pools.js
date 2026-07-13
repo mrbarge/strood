@@ -4,13 +4,17 @@
  *
  * NOTE: Chord patterns use sequential [] notation (not alternating <>)
  * so that /N division spreads the whole progression over N cycles.
- * Melodic patterns are kept reasonably dense to avoid long silences.
+ * IMPORTANT: In mini-notation, "/N" binds only to the token it follows,
+ * so mood code MUST wrap the sequence in brackets: "[" + seq + "]/N".
+ * Writing seq + "/N" only slows the LAST token and leaves every other
+ * chord/note firing every cycle. Melodic patterns are kept reasonably
+ * dense to avoid long silences.
  */
 Strood.Pools = {
     // === C MINOR FAMILY (for IDM moods) ===
     // All in C natural minor: C, D, Eb, F, G, Ab, Bb
     cMinor: {
-        // Bass note sequences (4 notes per cycle, use with /4 for one note per cycle)
+        // Bass note sequences (4 notes; wrap as [seq]/4 for one note per cycle)
         bassNotes: [
             "c2 eb2 g2 bb2",        // Cm7 arpeggio
             "c2 f2 g2 bb2",         // Cm7 variation
@@ -22,7 +26,7 @@ Strood.Pools = {
             "c2 d2 eb2 g2"          // C minor scale fragment
         ],
 
-        // Sub bass notes (root movement, use with /2 for slow pulse)
+        // Sub bass notes (root movement; wrap as [seq]/2 for slow pulse)
         subNotes: [
             "c1 c1 g1 g1",          // C - G pedal
             "c1 eb1 f1 g1",         // Scale walk
@@ -44,7 +48,7 @@ Strood.Pools = {
             "eb5 f5 g5 ~ bb5 ~ g5 f5"           // Modal run
         ],
 
-        // Chord voicings - sequential, spread with /N in mood code
+        // Chord voicings - sequential, spread with [seq]/N in mood code
         chords: [
             "[c3,eb3,g3] [f3,ab3,c4] [g3,bb3,d4] [c3,eb3,g3]",           // Cm - Fm - Gm - Cm
             "[c3,eb3,g3,bb3] [ab2,c3,eb3,g3] [bb2,d3,f3] [c3,eb3,g3]",   // Cm7 - Abmaj7 - Bb - Cm
