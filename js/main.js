@@ -127,9 +127,12 @@ Strood.App = class App {
 
         console.log('Playing mood:', this.state.currentMood, 'Cycle:', this.state.cycle.count, subtle ? '(subtle)' : '');
 
-        // For subtle changes, don't hush - let Strudel crossfade
-        // For radical changes and initial play, hush first
-        if (!subtle) {
+        // For subtle changes, don't hush - let Strudel crossfade.
+        // For radical changes and initial play, hush first — UNLESS crossfade
+        // transitions are enabled, in which case the radical shift is meant to
+        // start over the outgoing pattern's tail (no dead air). The initial
+        // play has nothing to hush, so skipping it there is harmless too.
+        if (!subtle && !Strood.Config.transitions.crossfade) {
             this.engine.hush();
         }
 

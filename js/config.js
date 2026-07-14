@@ -29,10 +29,17 @@ Strood.Config = {
 
     // Transition timing
     transitions: {
+        // crossfade: true  -> start the next pattern over the current one's
+        //   ringing tail (no hush) so a radical shift has zero dead air.
+        // crossfade: false -> hush, then wait tailDecayTime before the next
+        //   pattern. This leaves an audible silent gap (= tailDecayTime).
+        crossfade: true,
         ringOutTime: 2000,
-        tailDecayTime: 1500,
+        // tailDecayTime is the silent window in the non-crossfade path only.
+        // Reduced from 1500/2500 to just cover reverb/delay tail decay.
+        tailDecayTime: 400,
         ambientRingOutTime: 3500,
-        ambientTailDecayTime: 2500
+        ambientTailDecayTime: 800
     },
 
     // Evolution probability thresholds

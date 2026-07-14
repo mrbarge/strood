@@ -129,3 +129,26 @@ If this dead air is undesirable, the fix lives in the transition: reduce
 `tailDecayTime` toward 0, or replace `hush()`-then-wait with a real crossfade
 (start the next pattern before/while lowering the current one's gain rather than
 hard-hushing into silence).
+
+## Update — both fixes implemented (2026-07-14)
+
+Both mitigations above were implemented and made switchable via a new
+`transitions.crossfade` flag in `js/config.js`:
+
+- **`crossfade: true` (new default).** `Engine.gracefulTransition()` skips
+  `hush()` entirely on a radical shift: after `ringOutTime` it just starts the
+  next pattern. The Strudel scheduler swaps the active pattern in, so the
+  outgoing pattern's already-scheduled tail (reverb/delay/held notes) rings out
+  under the new one — zero dead air. This reuses the exact mechanism the subtle
+  path already relied on every cycle. Requires `main.js` `playPattern()` to skip
+  its `!subtle` hush when crossfade is on (otherwise it would hush the very tail
+  it's preserving); that guard is now in place.
+- **`crossfade: false`.** Original hush-then-wait path, but `tailDecayTime` was
+  cut from **1500→400 ms** (ambient **2500→800 ms**) so the silent window only
+  covers tail decay instead of a full ~1.5 s gap.
+
+Side effect of crossfade mode: switching moods while playing (`selectMood` →
+`playPattern()`, `main.js`) now also blends instead of hard-cutting, since it too
+skips the hush. This is harmless (Strudel swaps rather than stacks patterns, so
+nothing leaks) and generally sounds better; if a hard cut on manual mood-switch
+is ever wanted, pass an explicit flag from that call site to force the hush.

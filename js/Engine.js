@@ -67,7 +67,17 @@ Strood.Engine = class Engine {
     }
 
     /**
-     * Graceful transition with fade out
+     * Graceful transition to the next pattern.
+     *
+     * Two strategies, selected by Strood.Config.transitions.crossfade:
+     *   - crossfade (default): after ringOutTime, invoke the callback WITHOUT
+     *     hushing. The callback starts the next pattern, which the Strudel
+     *     scheduler swaps in while the current pattern's scheduled tail decays
+     *     naturally — no dead air. (Relies on playPattern skipping its hush when
+     *     crossfade is on; see main.js.)
+     *   - hush: after ringOutTime, hush everything, wait tailDecayTime for
+     *     reverb/delay tails to decay, then invoke the callback. The
+     *     tailDecayTime wait is an intentional silent gap.
      */
     gracefulTransition(isAmbient, callback) {
         const transitions = Strood.Config.transitions;
@@ -80,11 +90,20 @@ Strood.Engine = class Engine {
             ? transitions.ambientTailDecayTime
             : transitions.tailDecayTime;
 
-        // Let current pattern ring out
+        if (transitions.crossfade) {
+            // Let the current pattern breathe, then start the next one over the
+            // top. No hush() → the old tail rings out under the new pattern.
+            setTimeout(() => {
+                if (callback) callback();
+            }, ringOutTime);
+            return;
+        }
+
+        // Let current pattern ring out, then hush and wait for tails to decay.
         setTimeout(() => {
             this.hush();
 
-            // Wait for reverb/delay tails to decay
+            // Wait for reverb/delay tails to decay (audible silent gap).
             setTimeout(() => {
                 if (callback) callback();
             }, tailDecayTime);
